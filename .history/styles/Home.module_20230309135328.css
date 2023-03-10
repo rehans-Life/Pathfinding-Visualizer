@@ -1,0 +1,14 @@
+.main {
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.node {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+}

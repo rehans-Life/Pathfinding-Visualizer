@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+.node {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+}
+
+.row {
+  display: flex;
+}
+.button {
+  display: flex;
+  align-items: center;
+}
+
+.startNode {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+  background-color: lightgreen;
+}
+.visited {
+  background-color: yellowgreen;
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+}
+
+.wall {
+  background-color: darkcyan;
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+}
+
+.inPath {
+  background-color: burlywood;
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+}
+
+.endNode {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+  background-color: lightblue;
+}

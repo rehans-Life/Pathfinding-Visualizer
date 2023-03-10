@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+.node {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+}
+
+.row {
+  display: flex;
+}
+
+.startNode {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+  background-color: lightgreen;
+}
+
+.visited {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+  background-color: lightgreen;
+}
+.endNode {
+  padding: 10px;
+  border: 1px solid #111;
+  width: 10px;
+  background-color: lightblue;
+}
