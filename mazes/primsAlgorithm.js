@@ -1,4 +1,4 @@
-import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
+import { COLS, END_ROW, ROWS } from "../pages";
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;

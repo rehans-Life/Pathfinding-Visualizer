@@ -1,4 +1,5 @@
 import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
+import { getPath } from "./dijkstras";
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
@@ -69,7 +70,7 @@ class PriorityQueue {
   }
 }
 
-function aStar(grid, src, target) {
+export function aStar(grid, src, target) {
   let priorityQueue = new PriorityQueue();
   let delRow = [-1, +1, 0, 0];
   let delCol = [0, 0, -1, +1];
@@ -86,6 +87,11 @@ function aStar(grid, src, target) {
 
   while (!priorityQueue.isEmpty()) {
     let node = priorityQueue.delete();
+    visitedNodes.push(node);
+
+    if (node.row === target.row && node.col === target.col) {
+      return [visitedNodes, getPath(grid, target)];
+    }
 
     for (let i = 0; i < 4; i++) {
       let adjRow = node.row + delRow[i];
@@ -94,13 +100,11 @@ function aStar(grid, src, target) {
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
         let newDistance = node.distance + 1;
-        if (adjNode.row === target.row && adjNode.col === target.col) {
-          adjNode.parent = node;
-          visitedNodes.push(adjNode);
-          return visitedNodes;
-        }
 
-        if (!adjNode.isWall && newDistance < adjNode.distance) {
+        if (
+          (!adjNode.isWall && newDistance < adjNode.distance) ||
+          (adjNode.row === target.row && adjNode.col === target.col)
+        ) {
           adjNode.distance = newDistance;
           adjNode.huristic = Math.sqrt(
             (target.row - adjNode.row) ** 2 + (target.col - adjNode.col) ** 2
@@ -108,16 +112,12 @@ function aStar(grid, src, target) {
 
           adjNode.totalDistance = adjNode.distance + adjNode.huristic;
           adjNode.parent = node;
-          visitedNodes.push(adjNode);
-          if (adjNode.row === target.row && adjNode.col === target.col) {
-            return visitedNodes;
-          }
           priorityQueue.insert(adjNode);
         }
       }
     }
   }
-  return visitedNodes;
+  return [visitedNodes, getPath(grid, target)];
 }
 
 const animateAstar = (visitedNodes, path, grid, setGrid, setDisable) => {
@@ -171,13 +171,8 @@ export const visualizeAstar = (
   startNode,
   endNode
 ) => {
-  let visitedNodes = aStar(grid, startNode, endNode);
-  let node = grid[endNode.row][endNode.col];
-  let path = [];
-  while (node) {
-    path.push(node);
-    node = node.parent;
-  }
-  path.reverse();
+  let [visitedNodes, path] = aStar(grid, startNode, endNode);
+  console.log(visitedNodes);
+  console.log(path);
   animateAstar(visitedNodes, path, grid, setGrid, setDisable);
 };

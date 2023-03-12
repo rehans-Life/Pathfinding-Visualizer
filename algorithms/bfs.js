@@ -1,4 +1,5 @@
 import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
+import { getPath } from "./dijkstras";
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
@@ -27,7 +28,7 @@ export function bfs(grid, src, target) {
         let adjNode = grid[adjRow][adjCol];
         if (adjNode.row === target.row && adjNode.col === target.col) {
           adjNode.parent = node;
-          return visitedNodes;
+          return [visitedNodes, getPath(grid, target)];
         }
         if (!adjNode.isWall && newDistance < adjNode.distance) {
           adjNode.distance = newDistance;
@@ -38,7 +39,7 @@ export function bfs(grid, src, target) {
       }
     }
   }
-  return visitedNodes;
+  return [visitedNodes, []];
 }
 
 const animateBfs = (visitedNodes, path, grid, setGrid, setDisable) => {
@@ -86,13 +87,6 @@ const animatePath = (path, grid, setGrid, setDisable) => {
 };
 
 export const visualizeBfs = (grid, setGrid, setDisable, startNode, endNode) => {
-  let visitedNodes = bfs(grid, startNode, endNode);
-  let node = grid[endNode.row][endNode.col];
-  let path = [];
-  while (node) {
-    path.push(node);
-    node = node.parent;
-  }
-  path.reverse();
+  let [visitedNodes, path] = bfs(grid, startNode, endNode);
   animateBfs(visitedNodes, path, grid, setGrid, setDisable);
 };

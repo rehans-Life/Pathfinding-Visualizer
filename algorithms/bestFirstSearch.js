@@ -1,4 +1,5 @@
 import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
+import { getPath } from "./dijkstras";
 
 class PriorityQueue {
   constructor() {
@@ -64,7 +65,7 @@ function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
-function bestfs(grid, src, target) {
+export function bestfs(grid, src, target) {
   huristics(grid, target);
   let delRow = [-1, +1, 0, 0];
   let delCol = [0, 0, -1, +1];
@@ -78,18 +79,20 @@ function bestfs(grid, src, target) {
     let node = priorityQueue.delete();
     visitedNodes.push(node);
 
+    if (node.row === target.row && node.col === target.col) {
+      return [visitedNodes, getPath(grid, target)];
+    }
+
     for (let i = 0; i < 4; i++) {
       let adjRow = node.row + delRow[i];
       let adjCol = node.col + delCol[i];
 
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
-        if (adjNode.row === target.row && adjNode.col === target.col) {
-          adjNode.parent = node;
-          visitedNodes.push(adjNode);
-          return visitedNodes;
-        }
-        if (!adjNode.isWall && adjNode.distance === Infinity) {
+        if (
+          (!adjNode.isWall && adjNode.distance === Infinity) ||
+          (adjNode.row === target.row && adjNode.col === target.col)
+        ) {
           adjNode.distance = 1;
           adjNode.parent = node;
           priorityQueue.insert(adjNode);
@@ -97,7 +100,7 @@ function bestfs(grid, src, target) {
       }
     }
   }
-  return visitedNodes;
+  return [visitedNodes, []];
 }
 
 function huristics(grid, src) {
@@ -127,64 +130,3 @@ function huristics(grid, src) {
     }
   }
 }
-
-const animateBestfs = (visitedNodes, path, grid, setGrid, setDisable) => {
-  for (let i = 0; i < visitedNodes?.length; i++) {
-    if (i === visitedNodes.length - 1) {
-      setTimeout(() => {
-        animatePath(path, grid, setGrid, setDisable);
-      }, 10 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = visitedNodes[i];
-      let newNode = {
-        ...node,
-        isVisited: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 10 * i);
-  }
-};
-
-const animatePath = (path, grid, setGrid, setDisable) => {
-  for (let i = 0; i < path?.length; i++) {
-    if (i === path?.length - 1) {
-      setTimeout(() => {
-        setDisable(false);
-      }, 55 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-      let node = path[i];
-      let newNode = {
-        ...node,
-        isInPath: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 50 * i);
-  }
-};
-
-export const visualizeBestfs = (
-  grid,
-  setGrid,
-  setDisable,
-  startNode,
-  endNode
-) => {
-  let visitedNodes = bestfs(grid, startNode, endNode);
-  let node = grid[endNode.row][endNode.col];
-  let path = [];
-  while (node) {
-    path.push(node);
-    node = node.parent;
-  }
-  path.reverse();
-  animateBestfs(visitedNodes, path, grid, setGrid, setDisable);
-};

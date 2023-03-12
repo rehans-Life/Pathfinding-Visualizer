@@ -1,4 +1,5 @@
-import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
+import { COLS, ROWS } from "../pages";
+import { getPath } from "./dijkstras";
 
 function huristics(grid, src) {
   let queue = [];
@@ -32,7 +33,7 @@ function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
-function britishMuseum(grid, src, target) {
+export function britishMuseum(grid, src, target) {
   huristics(grid, target);
   let delRow = [-1, +1, 0, 0];
   let delCol = [0, 0, -1, +1];
@@ -42,6 +43,11 @@ function britishMuseum(grid, src, target) {
     visitedNodes.push(node);
     node.parent = parent;
     node.distance = 1;
+
+    if (node.row === target.row && node.col === target.col) {
+      return true;
+    }
+
     let adjNodes = [];
 
     for (let i = 0; i < 4; i++) {
@@ -50,13 +56,11 @@ function britishMuseum(grid, src, target) {
 
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
-        if (adjNode.row === target.row && adjNode.col === target.col) {
-          visitedNodes.push(node);
-          adjNode.parent = node;
-          return true;
-        }
 
-        if (!adjNode.isWall) {
+        if (
+          !adjNode.isWall ||
+          (adjNode.row === target.row && adjNode.col === target.col)
+        ) {
           adjNodes.push(adjNode);
         }
       }
@@ -70,74 +74,5 @@ function britishMuseum(grid, src, target) {
     }
   }
   dfs(src, null);
-  console.log(visitedNodes);
-  return visitedNodes;
+  return [visitedNodes, getPath(grid, target)];
 }
-
-const animateBritishMuseum = (
-  visitedNodes,
-  path,
-  grid,
-  setGrid,
-  setDisable
-) => {
-  for (let i = 0; i < visitedNodes?.length; i++) {
-    if (i === visitedNodes.length - 1) {
-      setTimeout(() => {
-        animatePath(path, grid, setGrid, setDisable);
-      }, 10 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = visitedNodes[i];
-      let newNode = {
-        ...node,
-        isVisited: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 10 * i);
-  }
-};
-
-const animatePath = (path, grid, setGrid, setDisable) => {
-  for (let i = 0; i < path?.length; i++) {
-    if (i === path?.length - 1) {
-      setTimeout(() => {
-        setDisable(false);
-      }, 20 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = path[i];
-      let newNode = {
-        ...node,
-        isInPath: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 20 * i);
-  }
-};
-
-export const visualizeBritishMuseum = (
-  grid,
-  setGrid,
-  setDisable,
-  startNode,
-  endNode
-) => {
-  let visitedNodes = britishMuseum(grid, startNode, endNode);
-  let node = grid[endNode.row][endNode.col];
-  let path = [];
-  while (node) {
-    path.push(node);
-    node = node.parent;
-  }
-  path.reverse();
-  animateBritishMuseum(visitedNodes, path, grid, setGrid, setDisable);
-};

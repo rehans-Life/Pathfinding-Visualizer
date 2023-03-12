@@ -1,4 +1,4 @@
-import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
+import { COLS, ROWS } from "../pages";
 
 class PriorityQueue {
   constructor() {
@@ -87,75 +87,22 @@ export function dijkstras(grid, src, target) {
         let adjNode = grid[adjRow][adjCol];
         if (adjNode.row === target.row && adjNode.col === target.col) {
           adjNode.parent = node;
-          return visitedNodes;
+          return [visitedNodes, getPath(grid, target)];
         }
         if (!adjNode.isWall && newDistance < adjNode.distance) {
           adjNode.distance = newDistance;
           adjNode.parent = node;
-          if (adjNode.row === target.row && adjNode.col === target.col) {
-            return visitedNodes;
-          }
           visitedNodes.push(adjNode);
           priorityQueue.insert(adjNode);
         }
       }
     }
   }
-  return visitedNodes;
+
+  return [visitedNodes, getPath(grid, target)];
 }
 
-const animteDijkstras = (visitedNodes, path, grid, setGrid, setDisable) => {
-  for (let i = 0; i < visitedNodes?.length; i++) {
-    if (i === visitedNodes.length - 1) {
-      setTimeout(() => {
-        animatePath(path, grid, setGrid, setDisable);
-      }, 10 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = visitedNodes[i];
-      let newNode = {
-        ...node,
-        isVisited: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 10 * i);
-  }
-};
-
-const animatePath = (path, grid, setGrid, setDisable) => {
-  for (let i = 0; i < path?.length; i++) {
-    if (i === path?.length - 1) {
-      setTimeout(() => {
-        setDisable(false);
-      }, 10 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = path[i];
-      let newNode = {
-        ...node,
-        isInPath: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 10 * i);
-  }
-};
-
-export const visualizeDijistras = (
-  grid,
-  setGrid,
-  setDisable,
-  startNode,
-  endNode
-) => {
-  let visitedNodes = dijkstras(grid, startNode, endNode);
+export const getPath = (grid, endNode) => {
   let node = grid[endNode.row][endNode.col];
   let path = [];
   while (node) {
@@ -163,5 +110,5 @@ export const visualizeDijistras = (
     node = node.parent;
   }
   path.reverse();
-  animteDijkstras(visitedNodes, path, grid, setGrid, setDisable);
+  return path;
 };
