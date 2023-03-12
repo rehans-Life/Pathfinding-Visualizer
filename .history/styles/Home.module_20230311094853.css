@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+.node {
+  padding: 5px;
+  border: 1px solid #111;
+}
+
+.row {
+  display: flex;
+}
+.button {
+  display: flex;
+  align-items: center;
+}
+
+.startNode {
+  padding: 5px;
+  border: 1px solid #111;
+  background-color: black;
+}
+.visited {
+  background-color: lightslategray;
+  padding: 5px;
+  border: 1px solid #111;
+}
+
+.wall {
+  background-color: darkslateblue;
+  padding: 5px;
+  border: 1px solid #111;
+}
+
+.inPath {
+  background-color: royalblue;
+  padding: 5px;
+  border: 1px solid #111;
+}
+
+.endNode {
+  padding: 10px;
+  border: 1px solid #111;
+  background-color: pink;
+}

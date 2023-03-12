@@ -1,7 +1,7 @@
-import { END_COL, END_ROW, START_COL, START_ROW } from "../pages";
+import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
 
 function isValid(row, col) {
-  return row < 20 && row >= 0 && col < 50 && col >= 0;
+  return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
 class PriorityQueue {
@@ -70,39 +70,48 @@ class PriorityQueue {
 }
 
 function aStar(grid, src, target) {
-  const priorityQueue = new PriorityQueue();
-  let delRow = [-1, 0, 0, +1];
-  let delCol = [0, +1, -1, 0];
+  let priorityQueue = new PriorityQueue();
+  let delRow = [-1, +1, 0, 0];
+  let delCol = [0, 0, -1, +1];
+
   let visitedNodes = [];
 
+  priorityQueue.insert(src);
   src.distance = 0;
-  src.huristic = Math.sqrt(
+  src.huristic = Math.floor(
     Math.pow(src.row - target.row, 2) + Math.pow(src.col - target.col, 2)
   );
   src.totalDistance = src.distance + src.huristic;
-  priorityQueue.insert(src);
+  visitedNodes.push(src);
 
   while (!priorityQueue.isEmpty()) {
     let node = priorityQueue.delete();
-    visitedNodes.push(node);
-    if (node.row === target.row && node.col === target.col) {
-      return visitedNodes;
-    }
 
     for (let i = 0; i < 4; i++) {
       let adjRow = node.row + delRow[i];
       let adjCol = node.col + delCol[i];
-      let newDistance = node.distance + 1;
 
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
+        let newDistance = node.distance + 1;
+        if (adjNode.row === target.row && adjNode.col === target.col) {
+          adjNode.parent = node;
+          visitedNodes.push(adjNode);
+          return visitedNodes;
+        }
+
         if (!adjNode.isWall && newDistance < adjNode.distance) {
           adjNode.distance = newDistance;
           adjNode.huristic = Math.sqrt(
-            Math.pow(adjRow - target.row, 2) + Math.pow(adjCol - target.col, 2)
+            (target.row - adjNode.row) ** 2 + (target.col - adjNode.col) ** 2
           );
+
           adjNode.totalDistance = adjNode.distance + adjNode.huristic;
           adjNode.parent = node;
+          visitedNodes.push(adjNode);
+          if (adjNode.row === target.row && adjNode.col === target.col) {
+            return visitedNodes;
+          }
           priorityQueue.insert(adjNode);
         }
       }
@@ -111,11 +120,11 @@ function aStar(grid, src, target) {
   return visitedNodes;
 }
 
-const animateAstar = (visitedNodes, path, grid, setGrid) => {
+const animateAstar = (visitedNodes, path, grid, setGrid, setDisable) => {
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
       setTimeout(() => {
-        animatePath(path, grid, setGrid);
+        animatePath(path, grid, setGrid, setDisable);
       }, 10 * i);
     }
     setTimeout(() => {
@@ -133,8 +142,13 @@ const animateAstar = (visitedNodes, path, grid, setGrid) => {
   }
 };
 
-const animatePath = (path, grid, setGrid) => {
+const animatePath = (path, grid, setGrid, setDisable) => {
   for (let i = 0; i < path?.length; i++) {
+    if (i === path?.length - 1) {
+      setTimeout(() => {
+        setDisable(false);
+      }, 55 * i);
+    }
     setTimeout(() => {
       let newGrid = grid.slice();
 
@@ -150,16 +164,20 @@ const animatePath = (path, grid, setGrid) => {
   }
 };
 
-export const visualizeAstar = (grid, setGrid) => {
-  let startNode = grid[START_ROW][START_COL];
-  let endNode = grid[END_ROW][END_COL];
+export const visualizeAstar = (
+  grid,
+  setGrid,
+  setDisable,
+  startNode,
+  endNode
+) => {
   let visitedNodes = aStar(grid, startNode, endNode);
-  let node = grid[END_ROW][END_COL];
+  let node = grid[endNode.row][endNode.col];
   let path = [];
   while (node) {
     path.push(node);
     node = node.parent;
   }
   path.reverse();
-  animateAstar(visitedNodes, path, grid, setGrid);
+  animateAstar(visitedNodes, path, grid, setGrid, setDisable);
 };

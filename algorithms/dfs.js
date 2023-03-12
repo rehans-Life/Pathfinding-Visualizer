@@ -1,24 +1,22 @@
-import { END_COL, END_ROW, START_COL, START_ROW } from "../pages";
+import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
 
-export function visualizeDfs(grid, setGrid) {
-  let startNode = grid[START_ROW][START_COL];
-  let endNode = grid[END_ROW][END_COL];
+export function visualizeDfs(grid, setGrid, setDisable, startNode, endNode) {
   let visitedNodes = dfs(grid, startNode, endNode);
   let path = [];
-  let node = endNode;
+  let node = grid[endNode.row][endNode.col];
   while (node) {
     path.push(node);
     node = node.parent;
   }
   path.reverse();
-  animateDfs(visitedNodes, path, grid, setGrid);
+  animateDfs(visitedNodes, path, grid, setGrid, setDisable);
 }
 
-function animateDfs(visitedNodes, path, grid, setGrid) {
+function animateDfs(visitedNodes, path, grid, setGrid, setDisable) {
   for (let i = 0; i < visitedNodes.length; i++) {
     setTimeout(() => {
       if (i === visitedNodes.length - 1) {
-        animatePath(path, grid, setGrid);
+        animatePath(path, grid, setGrid, setDisable);
       }
       let newGrid = grid.slice();
 
@@ -34,8 +32,13 @@ function animateDfs(visitedNodes, path, grid, setGrid) {
   }
 }
 
-function animatePath(path, grid, setGrid) {
+function animatePath(path, grid, setGrid, setDisable) {
   for (let i = 0; i < path.length; i++) {
+    if (i === path?.length - 1) {
+      setTimeout(() => {
+        setDisable(false);
+      }, 10 * i);
+    }
     setTimeout(() => {
       let newGrid = grid.slice();
 
@@ -52,7 +55,7 @@ function animatePath(path, grid, setGrid) {
 }
 
 function isValid(row, col) {
-  return row < 20 && row >= 0 && col < 50 && col >= 0;
+  return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
 function dfs(grid, src, target) {
@@ -65,16 +68,17 @@ function dfs(grid, src, target) {
     node.parent = parent;
     visitedNodes.push(node);
 
-    if (node.row === target.row && node.col === target.col) {
-      return true;
-    }
-
     for (let i = 0; i < 4; i++) {
       let adjRow = node.row + delRow[i];
       let adjCol = node.col + delCol[i];
 
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
+        if (adjNode.row === target.row && adjNode.col === target.col) {
+          adjNode.parent = node;
+          visitedNodes.push(adjNode);
+          return true;
+        }
         if (!adjNode.isWall && adjNode.distance === Infinity) {
           if (helper(adjNode, node)) {
             return true;

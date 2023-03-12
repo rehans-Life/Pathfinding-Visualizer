@@ -1,7 +1,7 @@
-import { END_COL, END_ROW, START_COL, START_ROW } from "../pages";
+import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
 
 function isValid(row, col) {
-  return row < 20 && row >= 0 && col < 50 && col >= 0;
+  return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
 export function bfs(grid, src, target) {
@@ -25,12 +25,13 @@ export function bfs(grid, src, target) {
 
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
+        if (adjNode.row === target.row && adjNode.col === target.col) {
+          adjNode.parent = node;
+          return visitedNodes;
+        }
         if (!adjNode.isWall && newDistance < adjNode.distance) {
           adjNode.distance = newDistance;
           adjNode.parent = node;
-          if (adjNode.row === target.row && adjNode.col === target.col) {
-            return visitedNodes;
-          }
           visitedNodes.push(adjNode);
           queue.push(adjNode);
         }
@@ -40,11 +41,11 @@ export function bfs(grid, src, target) {
   return visitedNodes;
 }
 
-const animateBfs = (visitedNodes, path, grid, setGrid) => {
+const animateBfs = (visitedNodes, path, grid, setGrid, setDisable) => {
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
       setTimeout(() => {
-        animatePath(path, grid, setGrid);
+        animatePath(path, grid, setGrid, setDisable);
       }, 10 * i);
     }
     setTimeout(() => {
@@ -62,8 +63,13 @@ const animateBfs = (visitedNodes, path, grid, setGrid) => {
   }
 };
 
-const animatePath = (path, grid, setGrid) => {
+const animatePath = (path, grid, setGrid, setDisable) => {
   for (let i = 0; i < path?.length; i++) {
+    if (i === path?.length - 1) {
+      setTimeout(() => {
+        setDisable(false);
+      }, 25 * i);
+    }
     setTimeout(() => {
       let newGrid = grid.slice();
 
@@ -79,16 +85,14 @@ const animatePath = (path, grid, setGrid) => {
   }
 };
 
-export const visualizeBfs = (grid, setGrid) => {
-  let startNode = grid[START_ROW][START_COL];
-  let endNode = grid[END_ROW][END_COL];
+export const visualizeBfs = (grid, setGrid, setDisable, startNode, endNode) => {
   let visitedNodes = bfs(grid, startNode, endNode);
-  let node = grid[END_ROW][END_COL];
+  let node = grid[endNode.row][endNode.col];
   let path = [];
   while (node) {
     path.push(node);
     node = node.parent;
   }
   path.reverse();
-  animateBfs(visitedNodes, path, grid, setGrid);
+  animateBfs(visitedNodes, path, grid, setGrid, setDisable);
 };
