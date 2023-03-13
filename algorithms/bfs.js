@@ -28,7 +28,7 @@ export function bfs(grid, src, target) {
         let adjNode = grid[adjRow][adjCol];
         if (adjNode.row === target.row && adjNode.col === target.col) {
           adjNode.parent = node;
-          return [visitedNodes, getPath(grid, target)];
+          return [visitedNodes, getPath(grid, target, src)];
         }
         if (!adjNode.isWall && newDistance < adjNode.distance) {
           adjNode.distance = newDistance;

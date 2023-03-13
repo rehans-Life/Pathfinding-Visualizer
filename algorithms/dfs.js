@@ -36,5 +36,5 @@ export function dfs(grid, src, target) {
   }
 
   helper(src, null);
-  return [visitedNodes, getPath(grid, target)];
+  return [visitedNodes, getPath(grid, target, src)];
 }

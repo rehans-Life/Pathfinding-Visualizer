@@ -80,7 +80,7 @@ export function bestfs(grid, src, target) {
     visitedNodes.push(node);
 
     if (node.row === target.row && node.col === target.col) {
-      return [visitedNodes, getPath(grid, target)];
+      return [visitedNodes, getPath(grid, target,src)];
     }
 
     for (let i = 0; i < 4; i++) {

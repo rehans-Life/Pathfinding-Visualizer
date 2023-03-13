@@ -1,0 +1,173 @@
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(52, 73, 94);
+  color: rgb(255, 255, 255);
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+}
+
+.heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-right: 30px;
+  cursor: pointer;
+}
+
+.heading:hover {
+  color: #48c9b0;
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.navOptions {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  align-items: center;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 15px;
+}
+
+.options p {
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 5px;
+}
+
+.unselected:hover p,
+.unselected:hover svg {
+  color: #48c9b0;
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.options svg {
+  font-size: 18px;
+}
+
+.chevronUp {
+  transform: rotate(60);
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.dropdown {
+  position: absolute;
+  padding: 5px;
+  left: 0;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(52, 73, 94);
+  width: 200px;
+}
+
+.selected {
+  background-color: rgb(26, 188, 156);
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.dropdown button {
+  padding: 5px;
+  transition: ease-in;
+  font-size: 12px;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  transition-duration: 200ms;
+  text-align: left;
+  transition-property: all;
+  border-radius: 3px;
+}
+.dropdown button:hover {
+  background-color: rgb(26, 188, 156);
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.dropdown button:disabled {
+  color: rgb(255, 255, 255);
+}
+
+.dropdown button:disabled:hover {
+  background-color: rgb(185, 15, 15);
+  color: rgb(255, 255, 255);
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.visualizeBtn {
+  background-color: #1abc9c;
+  color: rgb(255, 255, 255);
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition-duration: 200ms;
+  transition-property: all;
+  transition: ease-in;
+}
+
+.visualizeBtn:hover {
+  background-color: var(--hover-color);
+}
+
+.visualizeBtn:disabled,
+.visualizeBtn:disabled:hover {
+  background-color: rgb(185, 15, 15);
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.btn {
+  background-color: transparent;
+  color: rgb(255, 255, 255);
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition-duration: 200ms;
+  transition-property: all;
+  transition: ease-in;
+}
+
+.btn:hover {
+  color: #48c9b0;
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}
+
+.btn:disabled:hover {
+  color: rgb(185, 15, 15);
+  transition: ease-in;
+  transition-duration: 200ms;
+  transition-property: all;
+}

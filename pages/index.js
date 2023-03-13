@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Node from "../components/Node";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { dijkstras } from "../algorithms/dijkstras";
 import { aStar } from "../algorithms/aStar";
@@ -10,38 +10,14 @@ import { bfs } from "../algorithms/bfs";
 import { dfs } from "../algorithms/dfs";
 import { bestfs } from "../algorithms/bestFirstSearch";
 import { britishMuseum } from "../algorithms/britishMuseum";
+import { clearWay } from "../visualize";
 
 export const START_ROW = 10;
 export const START_COL = 5;
 export const END_ROW = 10;
 export const END_COL = 40;
 export const ROWS = 21;
-export const COLS = 63;
-
-function getInitialGrid() {
-  let grid = [];
-  for (let i = 0; i < ROWS; i++) {
-    let row = [];
-    for (let j = 0; j < COLS; j++) {
-      const node = {
-        row: i,
-        col: j,
-        isStart: i === START_ROW && j === START_COL,
-        isEnd: i === END_ROW && j === END_COL,
-        distance: Infinity,
-        parent: null,
-        isVisited: false,
-        isInPath: false,
-        isWall: false,
-        huristic: Infinity,
-        totalDistance: Infinity,
-      };
-      row.push(node);
-    }
-    grid.push(row);
-  }
-  return grid;
-}
+export const COLS = 50;
 
 function instantAlgorithm(
   selectedAlgorithm,
@@ -53,7 +29,7 @@ function instantAlgorithm(
   clearPath,
   setEndNode
 ) {
-  clearPath();
+  clearPath(false);
   var endNode = grid[row][col];
   var visitedNodes;
   var path;
@@ -114,7 +90,7 @@ function instantAlgorithmII(
   clearPath,
   setStartNode
 ) {
-  clearPath();
+  clearPath(false);
   var startNode = grid[row][col];
   var visitedNodes;
   var path;
@@ -164,6 +140,295 @@ function instantAlgorithmII(
   setGrid(newGrid);
 }
 
+function instantAlgorithmIII(
+  selectedAlgorithm,
+  grid,
+  setGrid,
+  startNode,
+  row,
+  col,
+  endNode,
+  clearPath,
+  setBombNode
+) {
+  clearPath(false);
+  var bombNode = grid[row][col];
+
+  var visitedNodes;
+  var path;
+  var visitedNodes2;
+  var path2;
+
+  if (selectedAlgorithm === "Dijkstras") {
+    [visitedNodes, path] = dijkstras(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = dijkstras(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "A*") {
+    [visitedNodes, path] = aStar(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = aStar(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "Bidirectional") {
+    [visitedNodes, path] = bidirectional(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bidirectional(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "BFS") {
+    [visitedNodes, path] = bfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "DFS") {
+    [visitedNodes, path] = dfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = dfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "Best First Search") {
+    [visitedNodes, path] = bestfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bestfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "British Museum") {
+    [visitedNodes, path] = britishMuseum(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = britishMuseum(grid, bombNode, endNode);
+  }
+  var newGrid = grid.slice();
+
+  for (let i = 0; i < visitedNodes.length; i++) {
+    let node = visitedNodes[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isBombVisited: true,
+    };
+  }
+
+  for (let i = 0; i < visitedNodes2.length; i++) {
+    let node = visitedNodes2[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isVisited: true,
+    };
+  }
+
+  for (let i = 0; i < path.length; i++) {
+    let node = path[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isInPath: true,
+    };
+  }
+
+  for (let i = 0; i < path2.length; i++) {
+    let node = path2[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isInPath: true,
+    };
+  }
+
+  for (let i = 0; i < newGrid.length; i++) {
+    for (let j = 0; j < newGrid[i].length; j++) {
+      let node = newGrid[i][j];
+      newGrid[node.row][node.col] = {
+        ...node,
+        isBomb: node.row === row && node.col === col,
+      };
+    }
+  }
+
+  setBombNode(newGrid[row][col]);
+  setGrid(newGrid);
+}
+
+function instantAlgorithmIV(
+  selectedAlgorithm,
+  grid,
+  setGrid,
+  startNode,
+  bombNode,
+  row,
+  col,
+  clearPath,
+  setEndNode
+) {
+  clearPath(false);
+  var endNode = grid[row][col];
+
+  var visitedNodes;
+  var path;
+  var visitedNodes2;
+  var path2;
+
+  if (selectedAlgorithm === "Dijkstras") {
+    [visitedNodes, path] = dijkstras(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = dijkstras(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "A*") {
+    [visitedNodes, path] = aStar(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = aStar(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "Bidirectional") {
+    [visitedNodes, path] = bidirectional(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bidirectional(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "BFS") {
+    [visitedNodes, path] = bfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "DFS") {
+    [visitedNodes, path] = dfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = dfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "Best First Search") {
+    [visitedNodes, path] = bestfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bestfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "British Museum") {
+    [visitedNodes, path] = britishMuseum(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = britishMuseum(grid, bombNode, endNode);
+  }
+  var newGrid = grid.slice();
+
+  for (let i = 0; i < visitedNodes.length; i++) {
+    let node = visitedNodes[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isBombVisited: true,
+    };
+  }
+
+  for (let i = 0; i < visitedNodes2.length; i++) {
+    let node = visitedNodes2[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isVisited: true,
+    };
+  }
+
+  for (let i = 0; i < path.length; i++) {
+    let node = path[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isInPath: true,
+    };
+  }
+
+  for (let i = 0; i < path2.length; i++) {
+    let node = path2[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isInPath: true,
+    };
+  }
+
+  for (let i = 0; i < newGrid.length; i++) {
+    for (let j = 0; j < newGrid[i].length; j++) {
+      let node = newGrid[i][j];
+      newGrid[node.row][node.col] = {
+        ...node,
+        isEnd: node.row === row && node.col === col,
+        isStart: node.row === startNode.row && node.col === startNode.col,
+      };
+    }
+  }
+
+  setEndNode(newGrid[row][col]);
+  setGrid(newGrid);
+}
+
+function instantAlgorithmV(
+  selectedAlgorithm,
+  grid,
+  setGrid,
+  row,
+  col,
+  bombNode,
+  endNode,
+  clearPath,
+  setStartNode
+) {
+  clearPath(false);
+  var startNode = grid[row][col];
+
+  var visitedNodes;
+  var path;
+  var visitedNodes2;
+  var path2;
+
+  if (selectedAlgorithm === "Dijkstras") {
+    [visitedNodes, path] = dijkstras(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = dijkstras(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "A*") {
+    [visitedNodes, path] = aStar(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = aStar(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "Bidirectional") {
+    [visitedNodes, path] = bidirectional(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bidirectional(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "BFS") {
+    [visitedNodes, path] = bfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "DFS") {
+    [visitedNodes, path] = dfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = dfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "Best First Search") {
+    [visitedNodes, path] = bestfs(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = bestfs(grid, bombNode, endNode);
+  } else if (selectedAlgorithm === "British Museum") {
+    [visitedNodes, path] = britishMuseum(grid, startNode, bombNode);
+    clearWay(grid, setGrid);
+    [visitedNodes2, path2] = britishMuseum(grid, bombNode, endNode);
+  }
+
+  var newGrid = grid.slice();
+
+  for (let i = 0; i < visitedNodes2.length; i++) {
+    let node = visitedNodes2[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isVisited: true,
+    };
+  }
+
+  for (let i = 0; i < visitedNodes.length; i++) {
+    let node = visitedNodes[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isBombVisited: true,
+    };
+  }
+
+  for (let i = 0; i < path.length; i++) {
+    let node = path[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isInPath: true,
+    };
+  }
+
+  for (let i = 0; i < path2.length; i++) {
+    let node = path2[i];
+    newGrid[node.row][node.col] = {
+      ...node,
+      isInPath: true,
+    };
+  }
+
+  for (let i = 0; i < newGrid.length; i++) {
+    for (let j = 0; j < newGrid[i].length; j++) {
+      let node = newGrid[i][j];
+      newGrid[node.row][node.col] = {
+        ...node,
+        isStart: node.row === row && node.col === col,
+      };
+    }
+  }
+  setStartNode(newGrid[row][col]);
+  setGrid(newGrid);
+}
+
 export default function Home() {
   const [grid, setGrid] = useState(getInitialGrid());
   const [disable, setDisable] = useState(false);
@@ -171,44 +436,138 @@ export default function Home() {
   const [startNode, setStartNode] = useState(grid[START_ROW][START_COL]);
   const [endNode, setEndNode] = useState(grid[END_ROW][END_COL]);
   const [bombNode, setBombNode] = useState(null);
+  const [changeBomb, setChangeBomb] = useState(false);
   const [changeStart, setChangeStart] = useState(false);
   const [changeEnd, setChangeEnd] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(null);
   const [algoDone, setAlgoDone] = useState(false);
+
+  function getInitialGrid() {
+    let grid = [];
+    for (let i = 0; i < ROWS; i++) {
+      let row = [];
+      for (let j = 0; j < COLS; j++) {
+        const node = {
+          row: i,
+          col: j,
+          isStart: i === START_ROW && j === START_COL,
+          isEnd: i === END_ROW && j === END_COL,
+          isBomb: false,
+          distance: Infinity,
+          parent: null,
+          isBombVisited: false,
+          isVisited: false,
+          isInPath: false,
+          isWall: false,
+          huristic: Infinity,
+          totalDistance: Infinity,
+        };
+        row.push(node);
+      }
+      grid.push(row);
+    }
+    return grid;
+  }
+
+  function getInitialNodes(grid) {
+    setStartNode(grid[START_ROW][START_COL]);
+    setEndNode(grid[END_ROW][END_COL]);
+    setBombNode(null);
+    setAlgoDone(false);
+  }
+
+  const addBomb = () => {
+    clearBoard();
+    let row = 10;
+    let col = 32;
+    let newGrid = grid.slice();
+    let node = newGrid[row][col];
+    newGrid[row][col] = {
+      ...node,
+      isBomb: true,
+    };
+    setBombNode(newGrid[row][col]);
+    setGrid(newGrid);
+  };
 
   const handleMouseDown = (row, col) => {
     if (disable) return;
     if (row === startNode.row && col === startNode.col) {
       setChangeStart(true);
       if (algoDone) {
-        instantAlgorithmII(
-          selectedAlgorithm,
-          grid,
-          setGrid,
-          row,
-          col,
-          endNode,
-          clearPath,
-          setStartNode
-        );
+        if (bombNode) {
+          instantAlgorithmV(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            row,
+            col,
+            bombNode,
+            endNode,
+            clearPath,
+            setStartNode
+          );
+        } else {
+          instantAlgorithmII(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            row,
+            col,
+            endNode,
+            clearPath,
+            setStartNode
+          );
+        }
       } else {
         changeStartNode(row, col);
       }
     } else if (row === endNode.row && col === endNode.col) {
       setChangeEnd(true);
       if (algoDone) {
-        instantAlgorithm(
+        if (bombNode) {
+          instantAlgorithmIV(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            startNode,
+            bombNode,
+            row,
+            col,
+            clearPath,
+            setEndNode
+          );
+        } else {
+          instantAlgorithm(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            startNode,
+            row,
+            col,
+            clearPath,
+            setEndNode
+          );
+        }
+      } else {
+        changeEndNode(row, col);
+      }
+    } else if (row === bombNode?.row && col === bombNode?.col) {
+      setChangeBomb(true);
+      if (algoDone) {
+        instantAlgorithmIII(
           selectedAlgorithm,
           grid,
           setGrid,
           startNode,
           row,
           col,
+          endNode,
           clearPath,
-          setEndNode
+          setBombNode
         );
       } else {
-        changeEndNode(row, col);
+        changeBombNode(row, col);
       }
     } else {
       setMouseDown(true);
@@ -216,7 +575,7 @@ export default function Home() {
     }
   };
 
-  const clearPath = () => {
+  const clearPath = (algoClear = true) => {
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
       for (let j = 0; j < COLS; j++) {
@@ -224,6 +583,7 @@ export default function Home() {
         let newNode = {
           ...node,
           isVisited: false,
+          isBombVisited: false,
           distance: Infinity,
           huristic: Infinity,
           totalDistance: Infinity,
@@ -233,39 +593,84 @@ export default function Home() {
         newGrid[i][j] = newNode;
       }
     }
+    if (algoClear) setAlgoDone(false);
     setGrid(newGrid);
   };
 
   const handleMouseEnter = (row, col) => {
     if (changeStart) {
       if (algoDone) {
-        instantAlgorithmII(
-          selectedAlgorithm,
-          grid,
-          setGrid,
-          row,
-          col,
-          endNode,
-          clearPath,
-          setStartNode
-        );
+        if (bombNode) {
+          instantAlgorithmV(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            row,
+            col,
+            bombNode,
+            endNode,
+            clearPath,
+            setStartNode
+          );
+        } else {
+          instantAlgorithmII(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            row,
+            col,
+            endNode,
+            clearPath,
+            setStartNode
+          );
+        }
       } else {
         changeStartNode(row, col);
       }
     } else if (changeEnd) {
       if (algoDone) {
-        instantAlgorithm(
+        if (bombNode) {
+          instantAlgorithmIV(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            startNode,
+            bombNode,
+            row,
+            col,
+            clearPath,
+            setEndNode
+          );
+        } else {
+          instantAlgorithm(
+            selectedAlgorithm,
+            grid,
+            setGrid,
+            startNode,
+            row,
+            col,
+            clearPath,
+            setEndNode
+          );
+        }
+      } else {
+        changeEndNode(row, col);
+      }
+    } else if (changeBomb) {
+      if (algoDone) {
+        instantAlgorithmIII(
           selectedAlgorithm,
           grid,
           setGrid,
           startNode,
           row,
           col,
+          endNode,
           clearPath,
-          setEndNode
+          setBombNode
         );
       } else {
-        changeEndNode(row, col);
+        changeBombNode(row, col);
       }
     } else if (mouseDown) {
       setCellAsWall(row, col);
@@ -275,6 +680,7 @@ export default function Home() {
   const handleMouseUp = () => {
     setMouseDown(false);
     setChangeEnd(false);
+    setChangeBomb(false);
     setChangeStart(false);
   };
 
@@ -317,6 +723,22 @@ export default function Home() {
     setGrid(newGrid);
   };
 
+  const changeBombNode = (row, col) => {
+    let newGrid = grid.slice();
+    for (let i = 0; i < ROWS; i++) {
+      for (let j = 0; j < COLS; j++) {
+        let node = grid[i][j];
+        let newNode = {
+          ...node,
+          isBomb: i === row && j === col,
+        };
+        newGrid[i][j] = newNode;
+      }
+    }
+    setBombNode(newGrid[row][col]);
+    setGrid(newGrid);
+  };
+
   const clearBoard = () => {
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
@@ -325,6 +747,7 @@ export default function Home() {
         let newNode = {
           ...node,
           isVisited: false,
+          isBombVisited: false,
           distance: Infinity,
           huristic: Infinity,
           totalDistance: Infinity,
@@ -339,6 +762,16 @@ export default function Home() {
     setGrid(newGrid);
   };
 
+  const removeBomb = () => {
+    let newGrid = grid.slice();
+    newGrid[bombNode.row][bombNode.col] = {
+      ...bombNode,
+      isBomb: false,
+    };
+    setBombNode(null);
+    setGrid(newGrid);
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -347,8 +780,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar
-        startNode={startNode}
-        endNode={endNode}
         setDisable={setDisable}
         selectedAlgorithm={selectedAlgorithm}
         setSelectedAlgorithm={setSelectedAlgorithm}
@@ -358,6 +789,13 @@ export default function Home() {
         disable={disable}
         clearBoard={clearBoard}
         setAlgoDone={setAlgoDone}
+        addBomb={addBomb}
+        startNode={startNode}
+        endNode={endNode}
+        bombNode={bombNode}
+        removeBomb={removeBomb}
+        getInitialGrid={getInitialGrid}
+        getInitialNodes={getInitialNodes}
       />
       {grid.map((row, index) => (
         <div key={index} className={styles.row}>
@@ -372,9 +810,11 @@ export default function Home() {
               isVisited={node.isVisited}
               isInPath={node.isInPath}
               isWall={node.isWall}
+              isBomb={node.isBomb}
               handleMouseDown={handleMouseDown}
               handleMouseUp={handleMouseUp}
               handleMouseEnter={handleMouseEnter}
+              isBombVisited={node.isBombVisited}
             ></Node>
           ))}
         </div>

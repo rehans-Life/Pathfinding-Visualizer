@@ -87,7 +87,7 @@ export function dijkstras(grid, src, target) {
         let adjNode = grid[adjRow][adjCol];
         if (adjNode.row === target.row && adjNode.col === target.col) {
           adjNode.parent = node;
-          return [visitedNodes, getPath(grid, target)];
+          return [visitedNodes, getPath(grid, target, src)];
         }
         if (!adjNode.isWall && newDistance < adjNode.distance) {
           adjNode.distance = newDistance;
@@ -99,14 +99,15 @@ export function dijkstras(grid, src, target) {
     }
   }
 
-  return [visitedNodes, getPath(grid, target)];
+  return [visitedNodes, getPath(grid, target, src)];
 }
 
-export const getPath = (grid, endNode) => {
+export const getPath = (grid, endNode, startNode) => {
   let node = grid[endNode.row][endNode.col];
   let path = [];
   while (node) {
     path.push(node);
+    if (node.row === startNode.row && node.col === startNode.col) break;
     node = node.parent;
   }
   path.reverse();

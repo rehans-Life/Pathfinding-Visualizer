@@ -74,5 +74,5 @@ export function britishMuseum(grid, src, target) {
     }
   }
   dfs(src, null);
-  return [visitedNodes, getPath(grid, target)];
+  return [visitedNodes, getPath(grid, target, src)];
 }

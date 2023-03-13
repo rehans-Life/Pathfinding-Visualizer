@@ -1,4 +1,4 @@
-import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
+import { COLS, ROWS } from "../pages";
 import { getPath } from "./dijkstras";
 
 function isValid(row, col) {
@@ -72,8 +72,9 @@ class PriorityQueue {
 
 export function aStar(grid, src, target) {
   let priorityQueue = new PriorityQueue();
-  let delRow = [-1, +1, 0, 0];
-  let delCol = [0, 0, -1, +1];
+
+  let delRow = [-1, 0, +1, 0];
+  let delCol = [0, +1, 0, -1];
 
   let visitedNodes = [];
 
@@ -89,10 +90,6 @@ export function aStar(grid, src, target) {
     let node = priorityQueue.delete();
     visitedNodes.push(node);
 
-    if (node.row === target.row && node.col === target.col) {
-      return [visitedNodes, getPath(grid, target)];
-    }
-
     for (let i = 0; i < 4; i++) {
       let adjRow = node.row + delRow[i];
       let adjCol = node.col + delCol[i];
@@ -100,6 +97,12 @@ export function aStar(grid, src, target) {
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
         let newDistance = node.distance + 1;
+
+        if (adjNode.row === target.row && adjNode.col === target.col) {
+          adjNode.parent = node;
+
+          return [visitedNodes, getPath(grid, target, src)];
+        }
 
         if (
           (!adjNode.isWall && newDistance < adjNode.distance) ||
@@ -112,67 +115,11 @@ export function aStar(grid, src, target) {
 
           adjNode.totalDistance = adjNode.distance + adjNode.huristic;
           adjNode.parent = node;
+
           priorityQueue.insert(adjNode);
         }
       }
     }
   }
-  return [visitedNodes, getPath(grid, target)];
+  return [visitedNodes, getPath(grid, target, src)];
 }
-
-const animateAstar = (visitedNodes, path, grid, setGrid, setDisable) => {
-  for (let i = 0; i < visitedNodes?.length; i++) {
-    if (i === visitedNodes.length - 1) {
-      setTimeout(() => {
-        animatePath(path, grid, setGrid, setDisable);
-      }, 10 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = visitedNodes[i];
-      let newNode = {
-        ...node,
-        isVisited: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 10 * i);
-  }
-};
-
-const animatePath = (path, grid, setGrid, setDisable) => {
-  for (let i = 0; i < path?.length; i++) {
-    if (i === path?.length - 1) {
-      setTimeout(() => {
-        setDisable(false);
-      }, 55 * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = path[i];
-      let newNode = {
-        ...node,
-        isInPath: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, 50 * i);
-  }
-};
-
-export const visualizeAstar = (
-  grid,
-  setGrid,
-  setDisable,
-  startNode,
-  endNode
-) => {
-  let [visitedNodes, path] = aStar(grid, startNode, endNode);
-  console.log(visitedNodes);
-  console.log(path);
-  animateAstar(visitedNodes, path, grid, setGrid, setDisable);
-};

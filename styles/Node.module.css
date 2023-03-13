@@ -1,0 +1,153 @@
+.node {
+  border: 1px solid rgb(175, 216, 248);
+  width: 24px;
+  height: 24px;
+}
+
+.animation {
+  width: 100%;
+  height: 100%;
+  animation-duration: 2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+  animation-play-state: running;
+  animation-iteration-count: 1;
+}
+
+.startNode {
+  background: url("../public/styling/triangletwo-right.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  animation-name: special;
+  animation-duration: 0.2s;
+}
+
+.bombNode {
+  background: url("../public/styling/diamond.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  animation-name: special;
+  animation-duration: 0.2s;
+}
+
+.bombVisited {
+  animation-name: bombVisited;
+}
+
+.visited {
+  animation-name: visitedNode;
+}
+
+.wall {
+  animation-name: wall;
+  animation-duration: 0.3s;
+}
+
+.inPath {
+  animation-name: path;
+}
+
+.endNode {
+  background: url("../public/styling/circle.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  animation-name: special;
+  animation-duration: 0.2s;
+}
+
+@keyframes visitedNode {
+  0% {
+    transform: scale(0.7);
+    border-radius: 50%;
+    background-color: rgb(244, 255, 83);
+  }
+  10% {
+    transform: scale(0.4);
+    border-radius: 30%;
+    background-color: rgba(0, 0, 66, 0.75);
+  }
+  50% {
+    transform: scale(0.8);
+    border-radius: 20%;
+    background-color: rgba(17, 104, 217, 0.75);
+  }
+  80% {
+    transform: scale(1.2);
+    background-color: rgba(0, 217, 159, 0.75);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgba(0, 190, 218, 0.75);
+  }
+}
+
+@keyframes bombVisited {
+  0% {
+    transform: scale(0.7);
+    border-radius: 50%;
+    background-color: rgb(244, 255, 83);
+  }
+  10% {
+    transform: scale(0.4);
+    border-radius: 30%;
+    background-color: rgba(41, 4, 24, 0.75);
+  }
+  50% {
+    transform: scale(0.8);
+    border-radius: 20%;
+    background-color: rgba(97, 0, 20, 0.75);
+  }
+  80% {
+    transform: scale(1.2);
+    background-color: rgba(216, 5, 141, 0.75);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgba(178, 67, 255, 0.75);
+  }
+}
+
+@keyframes wall {
+  0% {
+    transform: scale(0.3);
+    background-color: rgb(12, 53, 71);
+  }
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(12, 53, 71);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgb(12, 53, 71);
+  }
+}
+
+@keyframes path {
+  0% {
+    transform: scale(0.3);
+    background-color: rgb(244, 255, 83);
+  }
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(244, 255, 83);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgb(244, 255, 83);
+  }
+}
+
+@keyframes special {
+  0% {
+    transform: scale(0.2);
+  }
+  50% {
+    transform: scale(0.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

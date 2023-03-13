@@ -11,11 +11,11 @@ export function bidirectional(grid, src, target) {
   let forwardVisitedNodes = [];
   let backwardVisitedNodes = [];
 
-  src.distance = 0;
+  src.distance = 1;
   forwardQueue.push(src);
   forwardVisitedNodes.push(src);
 
-  target.distance = 0;
+  target.distance = 1;
   backwardQueue.push(target);
   backwardVisitedNodes.push(target);
 
@@ -31,7 +31,7 @@ export function bidirectional(grid, src, target) {
     if (backwardIntersectingNodes) {
       return [
         answer(forwardVisitedNodes, backwardVisitedNodes),
-        genertatePath(backwardIntersectingNodes),
+        genertatePath(backwardIntersectingNodes, target),
       ];
     }
   }
@@ -52,7 +52,7 @@ function answer(forwardVisitedNodes, backwardVisitedNodes) {
   return visitedNodes;
 }
 
-function genertatePath(intersectingingNodes) {
+function genertatePath(intersectingingNodes, target) {
   let forwardPath = [];
   let forwardNode = intersectingingNodes[0];
   while (forwardNode) {
@@ -62,7 +62,11 @@ function genertatePath(intersectingingNodes) {
   forwardPath.reverse();
   let backwardPath = [];
   let backwardNode = intersectingingNodes[1];
-  while (backwardNode) {
+
+  while (
+    backwardNode &&
+    (backwardNode.row !== target.row || backwardNode.col !== target.col)
+  ) {
     backwardPath.push(backwardNode);
     backwardNode = backwardNode.parent;
   }
