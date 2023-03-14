@@ -14,10 +14,17 @@ export default function Node({
   handleMouseDown,
   handleMouseUp,
   handleMouseEnter,
+  isInstantInPath,
+  isInstantVisited,
+  isBombInstantVisited,
+  isAlgoDone,
+  isWeighted,
 }) {
   return (
     <div
-      className={styles.node}
+      className={`${styles.node} ${
+        !isWall && !isInPath && !isInstantInPath ? styles.border : {}
+      }`}
       onMouseDown={() => handleMouseDown(row, col)}
       onMouseUp={handleMouseUp}
       onMouseEnter={() => handleMouseEnter(row, col)}
@@ -25,19 +32,33 @@ export default function Node({
       <div
         className={`${styles.animation} ${
           isStart
-            ? styles.startNode
+            ? `${styles.startNode} ${isAlgoDone ? styles.isSpecialPath : ""}`
             : isEnd
-            ? styles.endNode
+            ? `${styles.endNode} ${isAlgoDone ? styles.isSpecialPath : ""}`
             : isBomb
-            ? styles.bombNode
+            ? `${styles.bombNode} ${isAlgoDone ? styles.isSpecialPath : ""}`
             : isWall
             ? styles.wall
             : isInPath
             ? styles.inPath
             : isVisited
-            ? styles.visited
+            ? `${styles.visited} ${isWeighted ? styles.visitedWeighted : ""}`
             : isBombVisited
-            ? styles.bombVisited
+            ? `${styles.bombVisited}  ${
+                isWeighted ? styles.visitedWeighted : ""
+              }`
+            : isInstantInPath
+            ? styles.instantInPath
+            : isInstantVisited
+            ? `${styles.instantVisited}  ${
+                isWeighted ? styles.visitedWeighted : ""
+              }`
+            : isBombInstantVisited
+            ? `${styles.bombInstantVisited}  ${
+                isWeighted ? styles.visitedWeighted : ""
+              }`
+            : isWeighted
+            ? styles.weighted
             : {}
         }`}
       >

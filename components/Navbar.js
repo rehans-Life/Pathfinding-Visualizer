@@ -7,24 +7,31 @@ import Link from "next/link";
 
 const algorithms = [
   {
+    title: "Dijkstras Algorithm",
     name: "Dijkstras",
   },
   {
+    title: "A* Search",
     name: "A*",
   },
   {
+    title: "Bidirectional Search",
     name: "Bidirectional",
   },
   {
+    title: "Best First Search",
     name: "Best First Search",
   },
   {
+    title: "British Museum Search",
     name: "British Museum",
   },
   {
+    title: "BFS",
     name: "BFS",
   },
   {
+    title: "DFS",
     name: "DFS",
   },
 ];
@@ -41,6 +48,22 @@ const mazes = [
   },
   {
     name: "Vertical Skew",
+  },
+  { name: "Weighted Maze" },
+];
+
+const times = [
+  {
+    name: "Fast",
+    time: 10,
+  },
+  {
+    name: "Average",
+    time: 20,
+  },
+  {
+    name: "Slow",
+    time: 35,
   },
 ];
 
@@ -61,10 +84,14 @@ export default function Navbar({
   removeBomb,
   getInitialGrid,
   getInitialNodes,
+  selectedTime,
+  setSelectedTime,
 }) {
   const [showAlgorithms, setShowAlgorithms] = useState(false);
   const [notSelected, setNotSelected] = useState(false);
   const [showMazes, setShowMazes] = useState(false);
+  const [selectTime, setSelectTime] = useState(false);
+  const [selectedTimeName, setSelectedTimeName] = useState("Average");
 
   return (
     <nav className={styles.navbar}>
@@ -79,6 +106,7 @@ export default function Navbar({
           onClick={() => {
             setShowAlgorithms(!showAlgorithms);
             setShowMazes(false);
+            setSelectTime(false);
           }}
         >
           <p>Algorithms</p>
@@ -98,7 +126,7 @@ export default function Navbar({
                 exit={{ opacity: 0, scale: 0, y: -25, animationDuration: 400 }}
                 className={styles.dropdown}
               >
-                {algorithms.map(({ name }, index) => (
+                {algorithms.map(({ name, title }, index) => (
                   <button
                     disabled={disable}
                     key={index}
@@ -107,7 +135,7 @@ export default function Navbar({
                       notSelected && setNotSelected(false);
                     }}
                   >
-                    {name}
+                    {title}
                   </button>
                 ))}
               </motion.div>
@@ -121,6 +149,7 @@ export default function Navbar({
           onClick={() => {
             setShowMazes(!showMazes);
             setShowAlgorithms(false);
+            setSelectTime(false);
           }}
         >
           <p>Mazes And Patterns</p>
@@ -150,7 +179,8 @@ export default function Navbar({
                         clearBoard,
                         setDisable,
                         startNode,
-                        endNode
+                        endNode,
+                        selectedTime
                       )
                     }
                   >
@@ -183,7 +213,8 @@ export default function Navbar({
                     endNode,
                     bombNode,
                     clearPath,
-                    setAlgoDone
+                    setAlgoDone,
+                    selectedTime
                   )
                 : visualize(
                     selectedAlgorithm,
@@ -193,7 +224,8 @@ export default function Navbar({
                     startNode,
                     endNode,
                     clearPath,
-                    setAlgoDone
+                    setAlgoDone,
+                    selectedTime
                   )
               : setNotSelected(true);
           }}
@@ -217,6 +249,49 @@ export default function Navbar({
         <button disabled={disable} onClick={clearBoard} className={styles.btn}>
           Clear Walls And Paths
         </button>
+        <div
+          className={`${styles.options} ${
+            selectTime ? styles.selected : styles.unselected
+          }`}
+          onClick={() => {
+            setSelectTime(!selectTime);
+            setShowAlgorithms(false);
+            setShowMazes(false);
+          }}
+        >
+          <p>Speed: {selectedTimeName}</p>
+          <IoMdArrowDropdown
+            className={selectTime ? styles.chevronUp : styles.chevronDown}
+          />
+          <AnimatePresence>
+            {selectTime && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.75, y: -25 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 70,
+                  animationDuration: 400,
+                }}
+                exit={{ opacity: 0, scale: 0, y: -25, animationDuration: 400 }}
+                className={styles.timeDropdown}
+              >
+                {times.map(({ name, time }, index) => (
+                  <button
+                    disabled={disable}
+                    key={index}
+                    onClick={() => {
+                      setSelectedTime(time);
+                      setSelectedTimeName(name);
+                    }}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </nav>
   );

@@ -1,5 +1,8 @@
-.node {
+.border {
   border: 1px solid rgb(175, 216, 248);
+}
+
+.node {
   width: 24px;
   height: 24px;
 }
@@ -32,6 +35,18 @@
   animation-duration: 0.2s;
 }
 
+.instantVisited {
+  background-color: rgba(0, 190, 218, 0.75);
+}
+
+.bombInstantVisited {
+  background-color: rgba(178, 67, 255, 0.75);
+}
+
+.instantInPath {
+  background-color: rgb(244, 255, 83);
+}
+
 .bombVisited {
   animation-name: bombVisited;
 }
@@ -45,8 +60,30 @@
   animation-duration: 0.3s;
 }
 
+.weighted {
+  background: url("../public/styling/weight.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation-name: special;
+  animation-duration: 0.2s;
+}
+
+.visitedWeighted {
+  background-image: url("../public/styling/weight.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .inPath {
   animation-name: path;
+  background: url("../public/styling/spaceshiptwo-right.svg");
+  animation-duration: 2s;
+  animation-fill-mode: both;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .endNode {
@@ -56,6 +93,12 @@
   background-position: center;
   animation-name: special;
   animation-duration: 0.2s;
+}
+
+.isSpecialPath {
+  background-color: rgb(244, 255, 83);
+  opacity: 0.5;
+  animation-name: none;
 }
 
 @keyframes visitedNode {
@@ -127,15 +170,29 @@
 
 @keyframes path {
   0% {
-    transform: scale(0.3);
+    transform: scale(0.5);
     background-color: rgb(244, 255, 83);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+  25% {
+    transform: scale(1);
+    background-color: rgb(244, 255, 83);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.3);
     background-color: rgb(244, 255, 83);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
   }
   100% {
     transform: scale(1);
+    background: url("");
     background-color: rgb(244, 255, 83);
   }
 }

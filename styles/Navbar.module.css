@@ -71,6 +71,7 @@
   position: absolute;
   padding: 5px;
   left: 0;
+  z-index: 10;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
@@ -85,7 +86,8 @@
   transition-property: all;
 }
 
-.dropdown button {
+.dropdown button,
+.timeDropdown button {
   padding: 5px;
   transition: ease-in;
   font-size: 12px;
@@ -97,23 +99,38 @@
   transition-property: all;
   border-radius: 3px;
 }
-.dropdown button:hover {
+.dropdown button:hover,
+.timeDropdown button:hover {
   background-color: rgb(26, 188, 156);
   transition: ease-in;
   transition-duration: 200ms;
   transition-property: all;
 }
 
-.dropdown button:disabled {
+.dropdown button:disabled,
+.timeDropdown button:disabled {
   color: rgb(255, 255, 255);
 }
 
-.dropdown button:disabled:hover {
+.dropdown button:disabled:hover,
+.timeDropdown button:disabled:hover {
   background-color: rgb(185, 15, 15);
   color: rgb(255, 255, 255);
   transition: ease-in;
   transition-duration: 200ms;
   transition-property: all;
+}
+
+.timeDropdown {
+  position: absolute;
+  padding: 5px;
+  z-index: 10;
+  width: 100px;
+  left: 0;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(52, 73, 94);
 }
 
 .visualizeBtn {

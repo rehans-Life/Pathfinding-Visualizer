@@ -1,4 +1,4 @@
-import { COLS, END_ROW, ROWS } from "../pages";
+import { COLS, ROWS } from "../pages";
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
@@ -10,7 +10,8 @@ export function prims(
   clearBoard,
   setDisable,
   startNode,
-  endNode
+  endNode,
+  selectedTime
 ) {
   clearBoard();
   let passageNodes = [];
@@ -64,7 +65,15 @@ export function prims(
     );
   }
   passageNodes.push(startNode);
-  fillWalls(grid, setGrid, passageNodes, setDisable, startNode, endNode);
+  fillWalls(
+    grid,
+    setGrid,
+    passageNodes,
+    setDisable,
+    startNode,
+    endNode,
+    selectedTime
+  );
 }
 
 function connect(grid, frontierCell, frontierNeighbour, passageNodes) {
@@ -111,14 +120,15 @@ function fillWalls(
   passageNodes,
   setDisable,
   startNode,
-  endNode
+  endNode,
+  selectedTime
 ) {
   for (let i = 0; i < grid?.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
       if (i === ROWS - 1 && j === COLS - 1) {
         setTimeout(() => {
-          fillPassage(passageNodes, grid, setGrid, setDisable);
-        }, 10 * (i + j));
+          fillPassage(passageNodes, grid, setGrid, setDisable, selectedTime);
+        }, selectedTime * (i + j));
       }
       setTimeout(() => {
         let newGrid = grid.slice();
@@ -129,17 +139,17 @@ function fillWalls(
         };
         newGrid[node.row][node.col] = newNode;
         setGrid(newGrid);
-      }, 10 * (i + j));
+      }, selectedTime * (i + j));
     }
   }
 }
 
-function fillPassage(passageNodes, grid, setGrid, setDisable) {
+function fillPassage(passageNodes, grid, setGrid, setDisable, selectedTime) {
   for (let i = 0; i < passageNodes.length; i++) {
     if (i === passageNodes?.length - 1) {
       setTimeout(() => {
         setDisable(false);
-      }, 12 * i);
+      }, (selectedTime + 2) * i);
     }
     setTimeout(() => {
       let newGrid = grid.slice();
@@ -154,6 +164,6 @@ function fillPassage(passageNodes, grid, setGrid, setDisable) {
       };
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
-    }, 10 * i);
+    }, selectedTime * i);
   }
 }

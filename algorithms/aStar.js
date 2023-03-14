@@ -96,7 +96,7 @@ export function aStar(grid, src, target) {
 
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
-        let newDistance = node.distance + 1;
+        let newDistance = node.distance + adjNode.weight;
 
         if (adjNode.row === target.row && adjNode.col === target.col) {
           adjNode.parent = node;

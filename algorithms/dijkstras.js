@@ -77,14 +77,15 @@ export function dijkstras(grid, src, target) {
 
   while (!priorityQueue.isEmpty()) {
     let node = priorityQueue.delete();
+    visitedNodes.push(node);
 
     for (let i = 0; i < 4; i++) {
       let adjRow = node.row + delRow[i];
       let adjCol = node.col + delCol[i];
-      let newDistance = node.distance + 1;
 
       if (isValid(adjRow, adjCol)) {
         let adjNode = grid[adjRow][adjCol];
+        let newDistance = node.distance + adjNode.weight;
         if (adjNode.row === target.row && adjNode.col === target.col) {
           adjNode.parent = node;
           return [visitedNodes, getPath(grid, target, src)];
@@ -92,7 +93,6 @@ export function dijkstras(grid, src, target) {
         if (!adjNode.isWall && newDistance < adjNode.distance) {
           adjNode.distance = newDistance;
           adjNode.parent = node;
-          visitedNodes.push(adjNode);
           priorityQueue.insert(adjNode);
         }
       }

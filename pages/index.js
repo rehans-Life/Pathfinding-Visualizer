@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Node from "../components/Node";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { dijkstras } from "../algorithms/dijkstras";
 import { aStar } from "../algorithms/aStar";
@@ -54,7 +54,7 @@ function instantAlgorithm(
     let node = visitedNodes[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isVisited: true,
+      isInstantVisited: true,
     };
   }
 
@@ -62,7 +62,7 @@ function instantAlgorithm(
     let node = path[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
 
@@ -115,7 +115,7 @@ function instantAlgorithmII(
     let node = visitedNodes[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isVisited: true,
+      isInstantVisited: true,
     };
   }
 
@@ -123,7 +123,7 @@ function instantAlgorithmII(
     let node = path[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
   for (let i = 0; i < newGrid.length; i++) {
@@ -194,7 +194,7 @@ function instantAlgorithmIII(
     let node = visitedNodes[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isBombVisited: true,
+      isBombInstantVisited: true,
     };
   }
 
@@ -202,7 +202,7 @@ function instantAlgorithmIII(
     let node = visitedNodes2[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isVisited: true,
+      isInstantVisited: true,
     };
   }
 
@@ -210,7 +210,7 @@ function instantAlgorithmIII(
     let node = path[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
 
@@ -218,7 +218,7 @@ function instantAlgorithmIII(
     let node = path2[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
 
@@ -290,7 +290,7 @@ function instantAlgorithmIV(
     let node = visitedNodes[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isBombVisited: true,
+      isBombInstantVisited: true,
     };
   }
 
@@ -298,7 +298,7 @@ function instantAlgorithmIV(
     let node = visitedNodes2[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isVisited: true,
+      isInstantVisited: true,
     };
   }
 
@@ -306,7 +306,7 @@ function instantAlgorithmIV(
     let node = path[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
 
@@ -314,7 +314,7 @@ function instantAlgorithmIV(
     let node = path2[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
 
@@ -388,7 +388,7 @@ function instantAlgorithmV(
     let node = visitedNodes2[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isVisited: true,
+      isInstantVisited: true,
     };
   }
 
@@ -396,7 +396,7 @@ function instantAlgorithmV(
     let node = visitedNodes[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isBombVisited: true,
+      isBombInstantVisited: true,
     };
   }
 
@@ -404,7 +404,7 @@ function instantAlgorithmV(
     let node = path[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
 
@@ -412,7 +412,7 @@ function instantAlgorithmV(
     let node = path2[i];
     newGrid[node.row][node.col] = {
       ...node,
-      isInPath: true,
+      isInstantInPath: true,
     };
   }
 
@@ -441,6 +441,7 @@ export default function Home() {
   const [changeEnd, setChangeEnd] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(null);
   const [algoDone, setAlgoDone] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(20);
 
   function getInitialGrid() {
     let grid = [];
@@ -454,6 +455,7 @@ export default function Home() {
           isEnd: i === END_ROW && j === END_COL,
           isBomb: false,
           distance: Infinity,
+          weight: 1,
           parent: null,
           isBombVisited: false,
           isVisited: false,
@@ -461,6 +463,10 @@ export default function Home() {
           isWall: false,
           huristic: Infinity,
           totalDistance: Infinity,
+          isInstantInPath: false,
+          isBombInstantVisited: false,
+          isInstantVisited: false,
+          isWeighted: false,
         };
         row.push(node);
       }
@@ -477,16 +483,33 @@ export default function Home() {
   }
 
   const addBomb = () => {
-    clearBoard();
     let row = 10;
     let col = 32;
     let newGrid = grid.slice();
-    let node = newGrid[row][col];
-    newGrid[row][col] = {
-      ...node,
-      isBomb: true,
-    };
+    for (let i = 0; i < ROWS; i++) {
+      for (let j = 0; j < COLS; j++) {
+        let node = grid[i][j];
+        let newNode = {
+          ...node,
+          isStart: i === startNode.row && j === startNode.col,
+          isEnd: i === endNode.row && j === endNode.col,
+          isBomb: i === row && j === col,
+          isVisited: false,
+          isBombVisited: false,
+          isBombInstantVisited: false,
+          isInstantInPath: false,
+          isInstantVisited: false,
+          distance: Infinity,
+          huristic: Infinity,
+          totalDistance: Infinity,
+          isInPath: false,
+          parent: null,
+        };
+        newGrid[i][j] = newNode;
+      }
+    }
     setBombNode(newGrid[row][col]);
+    setAlgoDone(false);
     setGrid(newGrid);
   };
 
@@ -582,8 +605,13 @@ export default function Home() {
         let node = grid[i][j];
         let newNode = {
           ...node,
+          isStart: i === startNode.row && j === startNode.col,
+          isEnd: i === endNode.row && j === endNode.col,
           isVisited: false,
           isBombVisited: false,
+          isBombInstantVisited: false,
+          isInstantInPath: false,
+          isInstantVisited: false,
           distance: Infinity,
           huristic: Infinity,
           totalDistance: Infinity,
@@ -748,11 +776,16 @@ export default function Home() {
           ...node,
           isVisited: false,
           isBombVisited: false,
+          isBombInstantVisited: false,
+          isInstantInPath: false,
+          isInstantVisited: false,
           distance: Infinity,
           huristic: Infinity,
           totalDistance: Infinity,
           isInPath: false,
+          weight: 1,
           isWall: false,
+          isWeighted: false,
           parent: null,
         };
         newGrid[i][j] = newNode;
@@ -796,6 +829,8 @@ export default function Home() {
         removeBomb={removeBomb}
         getInitialGrid={getInitialGrid}
         getInitialNodes={getInitialNodes}
+        selectedTime={selectedTime}
+        setSelectedTime={setSelectedTime}
       />
       {grid.map((row, index) => (
         <div key={index} className={styles.row}>
@@ -815,6 +850,11 @@ export default function Home() {
               handleMouseUp={handleMouseUp}
               handleMouseEnter={handleMouseEnter}
               isBombVisited={node.isBombVisited}
+              isInstantVisited={node.isInstantVisited}
+              isBombInstantVisited={node.isBombInstantVisited}
+              isInstantInPath={node.isInstantInPath}
+              isAlgoDone={algoDone}
+              isWeighted={node.isWeighted}
             ></Node>
           ))}
         </div>

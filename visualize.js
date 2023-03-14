@@ -9,6 +9,7 @@ import { horizontalSkew } from "./mazes/horizontalSkew";
 import { prims } from "./mazes/primsAlgorithm";
 import { recursiveDivision } from "./mazes/recursiveDivision";
 import { verticalSkew } from "./mazes/verticalSkew";
+import { weightedMaze } from "./mazes/weightedMaze";
 import { COLS, ROWS } from "./pages";
 
 function check(path2, node) {
@@ -27,13 +28,14 @@ function animateAlgorithm(
   setGrid,
   setDisable,
   setAlgoDone,
-  path2 = []
+  path2 = [],
+  selectedTime
 ) {
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
       setTimeout(() => {
-        animatePath(path, grid, setGrid, setDisable, setAlgoDone);
-      }, 10 * i);
+        animatePath(path, grid, setGrid, setDisable, setAlgoDone, selectedTime);
+      }, selectedTime * i);
     }
     setTimeout(() => {
       let newGrid = grid.slice();
@@ -52,11 +54,18 @@ function animateAlgorithm(
       }
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
-    }, 10 * i);
+    }, selectedTime * i);
   }
 }
 
-const animatePath = (path, grid, setGrid, setDisable, setAlgoDone) => {
+const animatePath = (
+  path,
+  grid,
+  setGrid,
+  setDisable,
+  setAlgoDone,
+  selectedTime
+) => {
   if (!path?.length) {
     setDisable(false);
     setAlgoDone(true);
@@ -66,7 +75,7 @@ const animatePath = (path, grid, setGrid, setDisable, setAlgoDone) => {
       setTimeout(() => {
         setDisable(false);
         setAlgoDone(true);
-      }, 10 * i);
+      }, selectedTime * i);
     }
     setTimeout(() => {
       let newGrid = grid.slice();
@@ -79,7 +88,7 @@ const animatePath = (path, grid, setGrid, setDisable, setAlgoDone) => {
 
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
-    }, 10 * i);
+    }, selectedTime * i);
   }
 };
 
@@ -91,7 +100,8 @@ export function visualize(
   startNode,
   endNode,
   clearPath,
-  setAlgoDone
+  setAlgoDone,
+  selectedTime
 ) {
   setDisable(true);
   clearPath();
@@ -114,7 +124,16 @@ export function visualize(
     [visitedNodes, path] = britishMuseum(grid, startNode, endNode);
   }
 
-  animateAlgorithm(visitedNodes, path, grid, setGrid, setDisable, setAlgoDone);
+  animateAlgorithm(
+    visitedNodes,
+    path,
+    grid,
+    setGrid,
+    setDisable,
+    setAlgoDone,
+    [],
+    selectedTime
+  );
 }
 
 export function animateAlgorithmII(
@@ -125,7 +144,8 @@ export function animateAlgorithmII(
   grid,
   setGrid,
   setDisable,
-  setAlgoDone
+  setAlgoDone,
+  selectedTime
 ) {
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
@@ -137,9 +157,10 @@ export function animateAlgorithmII(
           grid,
           setGrid,
           setDisable,
-          setAlgoDone
+          setAlgoDone,
+          selectedTime
         );
-      }, 10 * i);
+      }, selectedTime * i);
     }
     setTimeout(() => {
       let newGrid = grid.slice();
@@ -152,7 +173,7 @@ export function animateAlgorithmII(
 
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
-    }, 10 * i);
+    }, selectedTime * i);
   }
 }
 
@@ -163,7 +184,8 @@ function animatePathII(
   grid,
   setGrid,
   setDisable,
-  setAlgoDone
+  setAlgoDone,
+  selectedTime
 ) {
   if (path.length < 2) {
     setDisable(false);
@@ -180,9 +202,10 @@ function animatePathII(
           setGrid,
           setDisable,
           setAlgoDone,
-          path
+          path,
+          selectedTime
         );
-      }, 11 * i);
+      }, (selectedTime + 1) * i);
     }
     setTimeout(() => {
       let newGrid = grid.slice();
@@ -195,9 +218,47 @@ function animatePathII(
 
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
-    }, 10 * i);
+    }, selectedTime * i);
   }
 }
+
+// function animateAlgorithmIII(
+//   visitedNodes,
+//   path,
+//   grid,
+//   setGrid,
+//   setDisable,
+//   setAlgoDone,
+//   path2 = [],
+//   selectedTime
+// ) {
+//   for (let i = 0; i < visitedNodes?.length; i++) {
+//     if (i === visitedNodes.length - 1) {
+//       setTimeout(() => {
+//         animatePathII(
+//           path2,
+//           path,
+//           grid,
+//           setGrid,
+//           setDisable,
+//           setAlgoDone,
+//           selectedTime
+//         );
+//       }, selectedTime * i);
+//     }
+//     setTimeout(() => {
+//       let newGrid = grid.slice();
+
+//       var node = visitedNodes[i];
+//       var newNode = {
+//         ...node,
+//         isVisited: true,
+//       };
+//       newGrid[node.row][node.col] = newNode;
+//       setGrid(newGrid);
+//     }, selectedTime * i);
+//   }
+// }
 
 export function visualizeII(
   selectedAlgorithm,
@@ -208,7 +269,8 @@ export function visualizeII(
   endNode,
   bombNode,
   clearPath,
-  setAlgoDone
+  setAlgoDone,
+  selectedTime
 ) {
   setDisable(true);
   clearPath();
@@ -256,7 +318,8 @@ export function visualizeII(
     grid,
     setGrid,
     setDisable,
-    setAlgoDone
+    setAlgoDone,
+    selectedTime
   );
 }
 
@@ -285,7 +348,8 @@ export const visualizeMazes = (
   clearBoard,
   setDisable,
   startNode,
-  endNode
+  endNode,
+  selectedTime
 ) => {
   setDisable(true);
   if (name === "Recursive Division") {
@@ -295,13 +359,40 @@ export const visualizeMazes = (
       clearBoard,
       setDisable,
       startNode,
-      endNode
+      endNode,
+      selectedTime
     );
   } else if (name === "Prims Algorithm") {
-    prims(grid, setGrid, clearBoard, setDisable, startNode, endNode);
+    prims(
+      grid,
+      setGrid,
+      clearBoard,
+      setDisable,
+      startNode,
+      endNode,
+      selectedTime
+    );
   } else if (name === "Horizontal Skew") {
-    horizontalSkew(grid, setGrid, clearBoard, setDisable, startNode, endNode);
+    horizontalSkew(
+      grid,
+      setGrid,
+      clearBoard,
+      setDisable,
+      startNode,
+      endNode,
+      selectedTime
+    );
   } else if (name === "Vertical Skew") {
-    verticalSkew(grid, setGrid, clearBoard, setDisable, startNode, endNode);
+    verticalSkew(
+      grid,
+      setGrid,
+      clearBoard,
+      setDisable,
+      startNode,
+      endNode,
+      selectedTime
+    );
+  } else if (name === "Weighted Maze") {
+    weightedMaze(grid, setGrid, clearBoard, setDisable);
   }
 };

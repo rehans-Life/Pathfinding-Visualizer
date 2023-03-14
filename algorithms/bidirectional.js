@@ -31,7 +31,7 @@ export function bidirectional(grid, src, target) {
     if (backwardIntersectingNodes) {
       return [
         answer(forwardVisitedNodes, backwardVisitedNodes),
-        genertatePath(backwardIntersectingNodes, target),
+        genertatePath(backwardIntersectingNodes, target, src),
       ];
     }
   }
@@ -52,10 +52,13 @@ function answer(forwardVisitedNodes, backwardVisitedNodes) {
   return visitedNodes;
 }
 
-function genertatePath(intersectingingNodes, target) {
+function genertatePath(intersectingingNodes, target, src) {
   let forwardPath = [];
   let forwardNode = intersectingingNodes[0];
-  while (forwardNode) {
+  while (
+    forwardNode &&
+    (forwardNode.row !== src.row || forwardNode.col !== src.col)
+  ) {
     forwardPath.push(forwardNode);
     forwardNode = forwardNode.parent;
   }

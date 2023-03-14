@@ -6,7 +6,8 @@ export function horizontalSkew(
   clearBoard,
   setDisable,
   startNode,
-  endNode
+  endNode,
+  selectedTime
 ) {
   clearBoard();
 
@@ -41,7 +42,15 @@ export function horizontalSkew(
     startNode,
     endNode
   );
-  animateWalls(visitedNodes, newGrid, setGrid, setDisable, startNode, endNode);
+  animateWalls(
+    visitedNodes,
+    newGrid,
+    setGrid,
+    setDisable,
+    startNode,
+    endNode,
+    selectedTime
+  );
   startNode.isWall = false;
   endNode.isWall = false;
 }
@@ -128,13 +137,14 @@ function animateWalls(
   setGrid,
   setDisable,
   startNode,
-  endNode
+  endNode,
+  selectedTime
 ) {
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
       setTimeout(() => {
         setDisable(false);
-      }, 12 * i);
+      }, (selectedTime + 2) * i);
     }
     setTimeout(() => {
       let newGrid = grid.slice();
@@ -147,6 +157,6 @@ function animateWalls(
 
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
-    }, 10 * i);
+    }, selectedTime * i);
   }
 }
