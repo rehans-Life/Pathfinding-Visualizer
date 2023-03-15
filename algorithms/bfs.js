@@ -1,11 +1,15 @@
-import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
 import { getPath } from "./dijkstras";
+
+var ROWS;
+var COLS;
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
 export function bfs(grid, src, target) {
+  ROWS = grid.length;
+  COLS = grid[0].length;
   let queue = [];
   let delRow = [-1, +1, 0, 0];
   let delCol = [0, 0, -1, +1];

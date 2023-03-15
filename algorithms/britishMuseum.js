@@ -1,4 +1,3 @@
-import { COLS, ROWS } from "../pages";
 import { getPath } from "./dijkstras";
 
 function huristics(grid, src) {
@@ -33,7 +32,12 @@ function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
+var ROWS;
+var COLS;
+
 export function britishMuseum(grid, src, target) {
+  ROWS = grid.length;
+  COLS = grid[0].length;
   huristics(grid, target);
   let delRow = [-1, +1, 0, 0];
   let delCol = [0, 0, -1, +1];

@@ -1,5 +1,7 @@
-import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
 import { getPath } from "./dijkstras";
+
+var ROWS;
+var COLS;
 
 class PriorityQueue {
   constructor() {
@@ -66,6 +68,8 @@ function isValid(row, col) {
 }
 
 export function bestfs(grid, src, target) {
+  ROWS = grid.length;
+  COLS = grid[0].length;
   huristics(grid, target);
   let delRow = [-1, +1, 0, 0];
   let delCol = [0, 0, -1, +1];
@@ -80,7 +84,7 @@ export function bestfs(grid, src, target) {
     visitedNodes.push(node);
 
     if (node.row === target.row && node.col === target.col) {
-      return [visitedNodes, getPath(grid, target,src)];
+      return [visitedNodes, getPath(grid, target, src)];
     }
 
     for (let i = 0; i < 4; i++) {

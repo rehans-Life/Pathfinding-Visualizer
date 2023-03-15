@@ -10,7 +10,6 @@ import { prims } from "./mazes/primsAlgorithm";
 import { recursiveDivision } from "./mazes/recursiveDivision";
 import { verticalSkew } from "./mazes/verticalSkew";
 import { weightedMaze } from "./mazes/weightedMaze";
-import { COLS, ROWS } from "./pages";
 
 function check(path2, node) {
   for (let i = 0; i < path2.length; i++) {
@@ -28,7 +27,6 @@ function animateAlgorithm(
   setGrid,
   setDisable,
   setAlgoDone,
-  path2 = [],
   selectedTime
 ) {
   for (let i = 0; i < visitedNodes?.length; i++) {
@@ -39,19 +37,11 @@ function animateAlgorithm(
     }
     setTimeout(() => {
       let newGrid = grid.slice();
-
       var node = visitedNodes[i];
-      if (check(path2, node)) {
-        var newNode = {
-          ...node,
-          isInPath: true,
-        };
-      } else {
-        var newNode = {
-          ...node,
-          isVisited: true,
-        };
-      }
+      var newNode = {
+        ...node,
+        isVisited: true,
+      };
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
     }, selectedTime * i);
@@ -75,7 +65,7 @@ const animatePath = (
       setTimeout(() => {
         setDisable(false);
         setAlgoDone(true);
-      }, selectedTime * i);
+      }, selectedTime * (i + 1));
     }
     setTimeout(() => {
       let newGrid = grid.slice();
@@ -88,7 +78,7 @@ const animatePath = (
 
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
-    }, selectedTime * i);
+    }, selectedTime * (i + 1));
   }
 };
 
@@ -131,7 +121,6 @@ export function visualize(
     setGrid,
     setDisable,
     setAlgoDone,
-    [],
     selectedTime
   );
 }
@@ -150,10 +139,9 @@ export function animateAlgorithmII(
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
       setTimeout(() => {
-        animatePathII(
-          path,
+        animateAlgorithm(
           visitedNodes2,
-          path2,
+          path.concat(path2),
           grid,
           setGrid,
           setDisable,
@@ -176,89 +164,6 @@ export function animateAlgorithmII(
     }, selectedTime * i);
   }
 }
-
-function animatePathII(
-  path,
-  visitedNodes2,
-  path2,
-  grid,
-  setGrid,
-  setDisable,
-  setAlgoDone,
-  selectedTime
-) {
-  if (path.length < 2) {
-    setDisable(false);
-    setAlgoDone(true);
-    return;
-  }
-  for (let i = 0; i < path?.length; i++) {
-    if (i === path?.length - 1) {
-      setTimeout(() => {
-        animateAlgorithm(
-          visitedNodes2,
-          path2,
-          grid,
-          setGrid,
-          setDisable,
-          setAlgoDone,
-          path,
-          selectedTime
-        );
-      }, (selectedTime + 1) * i);
-    }
-    setTimeout(() => {
-      let newGrid = grid.slice();
-
-      let node = path[i];
-      let newNode = {
-        ...node,
-        isInPath: true,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-      setGrid(newGrid);
-    }, selectedTime * i);
-  }
-}
-
-// function animateAlgorithmIII(
-//   visitedNodes,
-//   path,
-//   grid,
-//   setGrid,
-//   setDisable,
-//   setAlgoDone,
-//   path2 = [],
-//   selectedTime
-// ) {
-//   for (let i = 0; i < visitedNodes?.length; i++) {
-//     if (i === visitedNodes.length - 1) {
-//       setTimeout(() => {
-//         animatePathII(
-//           path2,
-//           path,
-//           grid,
-//           setGrid,
-//           setDisable,
-//           setAlgoDone,
-//           selectedTime
-//         );
-//       }, selectedTime * i);
-//     }
-//     setTimeout(() => {
-//       let newGrid = grid.slice();
-
-//       var node = visitedNodes[i];
-//       var newNode = {
-//         ...node,
-//         isVisited: true,
-//       };
-//       newGrid[node.row][node.col] = newNode;
-//       setGrid(newGrid);
-//     }, selectedTime * i);
-//   }
-// }
 
 export function visualizeII(
   selectedAlgorithm,
@@ -325,8 +230,8 @@ export function visualizeII(
 
 export function clearWay(grid, setGrid) {
   var newGrid = grid.slice();
-  for (let i = 0; i < ROWS; i++) {
-    for (let j = 0; j < COLS; j++) {
+  for (let i = 0; i < newGrid.length; i++) {
+    for (let j = 0; j < newGrid[i].length; j++) {
       let node = newGrid[i][j];
       let newNode = {
         ...node,

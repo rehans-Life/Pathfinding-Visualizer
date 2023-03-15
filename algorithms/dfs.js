@@ -1,11 +1,15 @@
-import { COLS, ROWS } from "../pages";
 import { getPath } from "./dijkstras";
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
+var ROWS;
+var COLS;
+
 export function dfs(grid, src, target) {
+  ROWS = grid.length;
+  COLS = grid[0].length;
   let visitedNodes = [];
   let delRow = [-1, 0, 0, +1];
   let delCol = [0, +1, -1, 0];

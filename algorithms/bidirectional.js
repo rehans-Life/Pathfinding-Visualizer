@@ -1,10 +1,14 @@
-import { COLS, ROWS } from "../pages";
+var ROWS;
+var COLS;
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
 
 export function bidirectional(grid, src, target) {
+  ROWS = grid.length;
+  COLS = grid[0].length;
+
   let forwardQueue = [];
   let backwardQueue = [];
 

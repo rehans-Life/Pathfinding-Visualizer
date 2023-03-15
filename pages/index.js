@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Node from "../components/Node";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { dijkstras } from "../algorithms/dijkstras";
 import { aStar } from "../algorithms/aStar";
@@ -430,11 +430,13 @@ function instantAlgorithmV(
 }
 
 export default function Home() {
-  const [grid, setGrid] = useState(getInitialGrid());
+  const [rows, setRows] = useState(ROWS);
+  const [cols, setCols] = useState(0);
+  const [grid, setGrid] = useState();
   const [disable, setDisable] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
-  const [startNode, setStartNode] = useState(grid[START_ROW][START_COL]);
-  const [endNode, setEndNode] = useState(grid[END_ROW][END_COL]);
+  const [startNode, setStartNode] = useState(null);
+  const [endNode, setEndNode] = useState(null);
   const [bombNode, setBombNode] = useState(null);
   const [changeBomb, setChangeBomb] = useState(false);
   const [changeStart, setChangeStart] = useState(false);
@@ -443,19 +445,47 @@ export default function Home() {
   const [algoDone, setAlgoDone] = useState(false);
   const [selectedTime, setSelectedTime] = useState(20);
 
+  useEffect(() => {
+    let screen = () => {
+      setCols(Math.floor(window.innerWidth / 20));
+      setStartNode(null);
+      setEndNode(null);
+      setBombNode(null);
+      setAlgoDone(false);
+    };
+    window.onresize = screen;
+    screen();
+  }, []);
+
+  useEffect(() => {
+    if (cols) setGrid(getInitialGrid());
+    if (cols < 40) setSelectedTime(35);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cols]);
+
+  useEffect(() => {
+    if (!startNode && !endNode && grid) {
+      let start_col = cols < 45 ? Math.floor(2) : 10;
+      let end_col = cols < 45 ? Math.floor(cols - 3) : cols - 10;
+      changeStartNode(START_ROW, start_col);
+      changeEndNode(END_ROW, end_col);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grid]);
+
   function getInitialGrid() {
     let grid = [];
     for (let i = 0; i < ROWS; i++) {
       let row = [];
-      for (let j = 0; j < COLS; j++) {
-        const node = {
+      for (let j = 0; j < cols; j++) {
+        let node = {
           row: i,
           col: j,
-          isStart: i === START_ROW && j === START_COL,
-          isEnd: i === END_ROW && j === END_COL,
           isBomb: false,
           distance: Infinity,
           weight: 1,
+          isStart: false,
+          isEnd: false,
           parent: null,
           isBombVisited: false,
           isVisited: false,
@@ -475,19 +505,19 @@ export default function Home() {
     return grid;
   }
 
-  function getInitialNodes(grid) {
-    setStartNode(grid[START_ROW][START_COL]);
-    setEndNode(grid[END_ROW][END_COL]);
+  function getInitialNodes() {
+    setStartNode(null);
+    setEndNode(null);
     setBombNode(null);
     setAlgoDone(false);
   }
 
   const addBomb = () => {
     let row = 10;
-    let col = 32;
+    let col = Math.floor(cols / 2);
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
-      for (let j = 0; j < COLS; j++) {
+      for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
           ...node,
@@ -601,12 +631,13 @@ export default function Home() {
   const clearPath = (algoClear = true) => {
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
-      for (let j = 0; j < COLS; j++) {
+      for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
           ...node,
           isStart: i === startNode.row && j === startNode.col,
           isEnd: i === endNode.row && j === endNode.col,
+          isBomb: i === bombNode?.row && j === bombNode?.col,
           isVisited: false,
           isBombVisited: false,
           isBombInstantVisited: false,
@@ -721,7 +752,7 @@ export default function Home() {
   const changeStartNode = (row, col) => {
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
-      for (let j = 0; j < COLS; j++) {
+      for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
           ...node,
@@ -737,7 +768,7 @@ export default function Home() {
   const changeEndNode = (row, col) => {
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
-      for (let j = 0; j < COLS; j++) {
+      for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
           ...node,
@@ -754,7 +785,7 @@ export default function Home() {
   const changeBombNode = (row, col) => {
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
-      for (let j = 0; j < COLS; j++) {
+      for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
           ...node,
@@ -770,7 +801,7 @@ export default function Home() {
   const clearBoard = () => {
     let newGrid = grid.slice();
     for (let i = 0; i < ROWS; i++) {
-      for (let j = 0; j < COLS; j++) {
+      for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
           ...node,
@@ -831,10 +862,11 @@ export default function Home() {
         getInitialNodes={getInitialNodes}
         selectedTime={selectedTime}
         setSelectedTime={setSelectedTime}
+        cols={cols}
       />
-      {grid.map((row, index) => (
+      {grid?.map((row, index) => (
         <div key={index} className={styles.row}>
-          {row.map((node, index) => (
+          {row?.map((node, index) => (
             <Node
               key={index}
               row={node.row}

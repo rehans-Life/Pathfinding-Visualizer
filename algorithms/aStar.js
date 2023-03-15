@@ -1,5 +1,7 @@
-import { COLS, ROWS } from "../pages";
 import { getPath } from "./dijkstras";
+
+var ROWS;
+var COLS;
 
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
@@ -72,6 +74,8 @@ class PriorityQueue {
 
 export function aStar(grid, src, target) {
   let priorityQueue = new PriorityQueue();
+  ROWS = grid.length;
+  COLS = grid[0].length;
 
   let delRow = [-1, 0, +1, 0];
   let delCol = [0, +1, 0, -1];

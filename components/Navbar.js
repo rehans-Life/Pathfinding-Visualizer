@@ -1,11 +1,12 @@
 import styles from "../styles/Navbar.module.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { visualize, visualizeII, visualizeMazes } from "../visualize";
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoIosMenu, IoMdArrowDropdown, IoMdClose } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import { FiChevronDown } from "react-icons/fi";
 
-const algorithms = [
+let algorithms = [
   {
     title: "Dijkstras Algorithm",
     name: "Dijkstras",
@@ -36,7 +37,7 @@ const algorithms = [
   },
 ];
 
-const mazes = [
+let mazes = [
   {
     name: "Recursive Division",
   },
@@ -86,12 +87,34 @@ export default function Navbar({
   getInitialNodes,
   selectedTime,
   setSelectedTime,
+  cols,
 }) {
   const [showAlgorithms, setShowAlgorithms] = useState(false);
   const [notSelected, setNotSelected] = useState(false);
   const [showMazes, setShowMazes] = useState(false);
   const [selectTime, setSelectTime] = useState(false);
-  const [selectedTimeName, setSelectedTimeName] = useState("Average");
+  const [selectedTimeName, setSelectedTimeName] = useState(
+    cols < 40 ? "Slow" : "Average"
+  );
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  useEffect(() => {
+    setSelectedTimeName(cols < 40 ? "Slow" : "Average");
+  }, [cols]);
+
+  const Select = ({ title, state, setState }) => {
+    return (
+      <div
+        className={styles.select}
+        onClick={() => {
+          setState((prev) => !prev);
+        }}
+      >
+        <p>{title}</p>
+        <FiChevronDown className={!state && styles.iconActivate} />
+      </div>
+    );
+  };
 
   return (
     <nav className={styles.navbar}>
@@ -110,9 +133,7 @@ export default function Navbar({
           }}
         >
           <p>Algorithms</p>
-          <IoMdArrowDropdown
-            className={showAlgorithms ? styles.chevronUp : styles.chevronDown}
-          />
+          <IoMdArrowDropdown className={showAlgorithms & styles.iconActivate} />
           <AnimatePresence>
             {showAlgorithms && (
               <motion.div
@@ -153,7 +174,9 @@ export default function Navbar({
           }}
         >
           <p>Mazes And Patterns</p>
-          <IoMdArrowDropdown />
+          <IoMdArrowDropdown
+            className={showAlgorithms & styles.iconActivate}
+          />{" "}
           <AnimatePresence>
             {showMazes && (
               <motion.div
@@ -161,7 +184,7 @@ export default function Navbar({
                 animate={{
                   opacity: 1,
                   scale: 1,
-                  y: 80,
+                  y: 95,
                   animationDuration: 400,
                 }}
                 exit={{ opacity: 0, scale: 0, y: -25, animationDuration: 400 }}
@@ -236,8 +259,8 @@ export default function Navbar({
         <button
           disabled={disable}
           onClick={() => {
-            setGrid(getInitialGrid);
             getInitialNodes(grid);
+            setGrid(getInitialGrid());
           }}
           className={styles.btn}
         >
@@ -247,7 +270,7 @@ export default function Navbar({
           Clear Path
         </button>
         <button disabled={disable} onClick={clearBoard} className={styles.btn}>
-          Clear Walls And Paths
+          Clear Walls And Weights
         </button>
         <div
           className={`${styles.options} ${
@@ -260,9 +283,7 @@ export default function Navbar({
           }}
         >
           <p>Speed: {selectedTimeName}</p>
-          <IoMdArrowDropdown
-            className={selectTime ? styles.chevronUp : styles.chevronDown}
-          />
+          <IoMdArrowDropdown className={showAlgorithms & styles.iconActivate} />
           <AnimatePresence>
             {selectTime && (
               <motion.div
@@ -293,6 +314,218 @@ export default function Navbar({
           </AnimatePresence>
         </div>
       </div>
+      <div className={styles.menuBtn} onClick={() => setShowSidebar(true)}>
+        <IoIosMenu />
+      </div>
+      <AnimatePresence>
+        {showSidebar && (
+          <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 200 }}
+            className={styles.sidebar}
+          >
+            <div
+              className={styles.closeBtn}
+              onClick={() => setShowSidebar(false)}
+            >
+              <IoMdClose />
+            </div>
+            <Select
+              title="Algorithms"
+              state={showAlgorithms}
+              setState={setShowAlgorithms}
+            />
+            <AnimatePresence>
+              {showAlgorithms && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    animationDuration: 400,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    animationDuration: 400,
+                  }}
+                  className={styles.dropdownSidebar}
+                >
+                  {algorithms.map(({ title, name }, index) => (
+                    <button
+                      disabled={disable}
+                      key={index}
+                      onClick={() => {
+                        setSelectedAlgorithm(name);
+                        notSelected && setNotSelected(false);
+                      }}
+                    >
+                      {title}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <Select
+              title="Mazes And Patterns"
+              state={showMazes}
+              setState={setShowMazes}
+            />
+            <AnimatePresence>
+              {showMazes && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    animationDuration: 400,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    animationDuration: 400,
+                  }}
+                  className={styles.dropdownSidebar}
+                >
+                  {mazes.map(({ name }, index) => (
+                    <button
+                      disabled={disable}
+                      key={index}
+                      onClick={() => {
+                        visualizeMazes(
+                          name,
+                          grid,
+                          setGrid,
+                          clearBoard,
+                          setDisable,
+                          startNode,
+                          endNode,
+                          selectedTime
+                        );
+                        setShowSidebar(false);
+                      }}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <button
+              disabled={disable}
+              className={`${styles.visualizeBtn} ${styles.sidebarVisualizeBtn}`}
+              onClick={() => {
+                if (selectedAlgorithm) {
+                  if (bombNode) {
+                    visualizeII(
+                      selectedAlgorithm,
+                      grid,
+                      setGrid,
+                      setDisable,
+                      startNode,
+                      endNode,
+                      bombNode,
+                      clearPath,
+                      setAlgoDone,
+                      selectedTime
+                    );
+                  } else {
+                    visualize(
+                      selectedAlgorithm,
+                      grid,
+                      setGrid,
+                      setDisable,
+                      startNode,
+                      endNode,
+                      clearPath,
+                      setAlgoDone,
+                      selectedTime
+                    );
+                  }
+                  setShowSidebar(false);
+                } else {
+                  setNotSelected(true);
+                }
+              }}
+            >
+              {!notSelected ? "Visualize" : "Pick an Algorithm"}
+              {selectedAlgorithm ? ` ${selectedAlgorithm}!` : "!"}
+            </button>
+            <div className={styles.btnBox}>
+              <button
+                disabled={disable}
+                onClick={() => (bombNode ? removeBomb() : addBomb())}
+                className={styles.sidebarBtn}
+              >
+                {!bombNode ? "Add Bomb" : "Remove Bomb"}
+              </button>
+              <button
+                disabled={disable}
+                onClick={() => {
+                  setGrid(getInitialGrid());
+                  getInitialNodes(grid);
+                }}
+                className={styles.sidebarBtn}
+              >
+                Clear Board
+              </button>
+              <button
+                disabled={disable}
+                onClick={clearPath}
+                className={styles.sidebarBtn}
+              >
+                Clear Path
+              </button>
+              <button
+                disabled={disable}
+                onClick={clearBoard}
+                className={styles.sidebarBtn}
+              >
+                Clear Walls And Weights
+              </button>
+            </div>
+            <div
+              className={styles.select}
+              onClick={() => {
+                setSelectTime(!selectTime);
+              }}
+            >
+              <p>Speed: {selectedTimeName}</p>
+              <FiChevronDown className={selectTime && styles.iconActivate} />
+            </div>
+            <AnimatePresence>
+              {selectTime && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    animationDuration: 400,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    animationDuration: 400,
+                  }}
+                  className={styles.dropdownSidebar}
+                >
+                  {times.map(({ name, time }, index) => (
+                    <button
+                      disabled={disable}
+                      key={index}
+                      onClick={() => {
+                        setSelectedTime(time);
+                        setSelectedTimeName(name);
+                      }}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

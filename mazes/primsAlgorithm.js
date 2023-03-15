@@ -1,8 +1,9 @@
-import { COLS, ROWS } from "../pages";
-
 function isValid(row, col) {
   return row < ROWS && row >= 0 && col < COLS && col >= 0;
 }
+
+var COLS;
+var ROWS;
 
 export function prims(
   grid,
@@ -13,6 +14,8 @@ export function prims(
   endNode,
   selectedTime
 ) {
+  COLS = grid[0].length;
+  ROWS = grid.length;
   clearBoard();
   let passageNodes = [];
   let newGrid = [];
@@ -135,7 +138,7 @@ function fillWalls(
         let node = grid[i][j];
         let newNode = {
           ...node,
-          isWall: node.row !== endNode.row || node.col !== endNode.col,
+          isWall: node.row !== endNode?.row || node.col !== endNode?.col,
         };
         newGrid[node.row][node.col] = newNode;
         setGrid(newGrid);

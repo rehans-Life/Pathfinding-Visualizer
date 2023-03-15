@@ -1,5 +1,3 @@
-import { COLS, END_COL, END_ROW, ROWS, START_COL, START_ROW } from "../pages";
-
 export function recursiveDivision(
   grid,
   setGrid,
@@ -9,6 +7,8 @@ export function recursiveDivision(
   endNode,
   selectedTime
 ) {
+  const COLS = grid[0].length;
+  const ROWS = grid.length;
   clearBoard();
   let newGrid = grid.slice();
   let visitedNodes = [];

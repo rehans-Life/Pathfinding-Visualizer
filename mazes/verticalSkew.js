@@ -1,5 +1,3 @@
-import { COLS, ROWS } from "../pages";
-
 export function verticalSkew(
   grid,
   setGrid,
@@ -9,6 +7,8 @@ export function verticalSkew(
   endNode,
   selectedTime
 ) {
+  const COLS = grid[0].length;
+  const ROWS = grid.length;
   clearBoard();
   let newGrid = grid.slice();
   let visitedNodes = [];

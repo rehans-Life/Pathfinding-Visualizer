@@ -1,4 +1,5 @@
-import { COLS, ROWS } from "../pages";
+var ROWS;
+var COLS;
 
 class PriorityQueue {
   constructor() {
@@ -68,6 +69,8 @@ export function dijkstras(grid, src, target) {
   let priorityQueue = new PriorityQueue();
   let delRow = [-1, +1, 0, 0];
   let delCol = [0, 0, -1, +1];
+  ROWS = grid.length;
+  COLS = grid[0].length;
 
   let visitedNodes = [];
 

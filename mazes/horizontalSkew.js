@@ -1,5 +1,3 @@
-import { COLS, ROWS } from "../pages";
-
 export function horizontalSkew(
   grid,
   setGrid,
@@ -13,6 +11,8 @@ export function horizontalSkew(
 
   let newGrid = grid.slice();
   let visitedNodes = [];
+  const COLS = grid[0].length;
+  const ROWS = grid.length;
 
   for (let i = 0; i < COLS; i++) {
     let firstRowNode = newGrid[0][i];
