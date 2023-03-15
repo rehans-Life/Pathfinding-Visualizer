@@ -11,6 +11,7 @@ import { dfs } from "../algorithms/dfs";
 import { bestfs } from "../algorithms/bestFirstSearch";
 import { britishMuseum } from "../algorithms/britishMuseum";
 import { clearWay } from "../visualize";
+import Header from "../components/Header";
 
 export const START_ROW = 10;
 export const START_COL = 5;
@@ -459,7 +460,11 @@ export default function Home() {
 
   useEffect(() => {
     if (cols) setGrid(getInitialGrid());
-    if (cols < 40) setSelectedTime(35);
+    if (cols < 40) {
+      setSelectedTime(35);
+    } else if (cols > 55) {
+      setSelectedTime(10);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cols]);
 
@@ -545,7 +550,7 @@ export default function Home() {
 
   const handleMouseDown = (row, col) => {
     if (disable) return;
-    if (row === startNode.row && col === startNode.col) {
+    if (row === startNode?.row && col === startNode?.col) {
       setChangeStart(true);
       if (algoDone) {
         if (bombNode) {
@@ -575,7 +580,7 @@ export default function Home() {
       } else {
         changeStartNode(row, col);
       }
-    } else if (row === endNode.row && col === endNode.col) {
+    } else if (row === endNode?.row && col === endNode?.col) {
       setChangeEnd(true);
       if (algoDone) {
         if (bombNode) {
@@ -864,33 +869,36 @@ export default function Home() {
         setSelectedTime={setSelectedTime}
         cols={cols}
       />
-      {grid?.map((row, index) => (
-        <div key={index} className={styles.row}>
-          {row?.map((node, index) => (
-            <Node
-              key={index}
-              row={node.row}
-              col={node.col}
-              isStart={node.isStart}
-              isEnd={node.isEnd}
-              distance={node.distance}
-              isVisited={node.isVisited}
-              isInPath={node.isInPath}
-              isWall={node.isWall}
-              isBomb={node.isBomb}
-              handleMouseDown={handleMouseDown}
-              handleMouseUp={handleMouseUp}
-              handleMouseEnter={handleMouseEnter}
-              isBombVisited={node.isBombVisited}
-              isInstantVisited={node.isInstantVisited}
-              isBombInstantVisited={node.isBombInstantVisited}
-              isInstantInPath={node.isInstantInPath}
-              isAlgoDone={algoDone}
-              isWeighted={node.isWeighted}
-            ></Node>
-          ))}
-        </div>
-      ))}
+      <Header />
+      <div className={styles.grid}>
+        {grid?.map((row, index) => (
+          <div key={index} className={styles.row}>
+            {row?.map((node, index) => (
+              <Node
+                key={index}
+                row={node.row}
+                col={node.col}
+                isStart={node.isStart}
+                isEnd={node.isEnd}
+                distance={node.distance}
+                isVisited={node.isVisited}
+                isInPath={node.isInPath}
+                isWall={node.isWall}
+                isBomb={node.isBomb}
+                handleMouseDown={handleMouseDown}
+                handleMouseUp={handleMouseUp}
+                handleMouseEnter={handleMouseEnter}
+                isBombVisited={node.isBombVisited}
+                isInstantVisited={node.isInstantVisited}
+                isBombInstantVisited={node.isBombInstantVisited}
+                isInstantInPath={node.isInstantInPath}
+                isAlgoDone={algoDone}
+                isWeighted={node.isWeighted}
+              ></Node>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

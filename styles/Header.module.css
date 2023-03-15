@@ -1,0 +1,77 @@
+.header {
+  display: flex;
+  justify-content: space-around;
+  width: 95%;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 20px;
+  row-gap: 15px;
+  column-gap: 20px;
+  /* overflow-x: scroll; */
+  margin: 0px;
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    padding-top: 10px;
+    justify-content: left;
+  }
+  .title {
+    font-size: 10px !important;
+  }
+  .box {
+    height: 15px !important;
+    width: 15px !important;
+  }
+  .icon {
+    height: 15px !important;
+    width: 15px !important;
+  }
+}
+
+.icon {
+  height: 20px;
+  width: 20px;
+  object-fit: contain;
+  margin: 0 5px;
+}
+
+.box {
+  height: 20px;
+  width: 20px;
+  margin: 0 5px;
+}
+
+.title {
+  font-size: 85%;
+  font-weight: 500;
+  color: rgb(12, 53, 71);
+  /* width: 60%; */
+}
+
+.unvisited {
+  border: 1px solid rgb(175, 216, 248);
+}
+
+.blue {
+  background-color: rgba(0, 190, 218, 0.75);
+}
+
+.purple {
+  background-color: rgba(178, 67, 255, 0.75);
+}
+
+.path {
+  background-color: rgb(244, 255, 83);
+}
+
+.wall {
+  background-color: rgb(12, 53, 71);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  /* margin: 5px; */
+}
