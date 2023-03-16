@@ -1,6 +1,5 @@
 .navbar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   position: relative;
   justify-content: space-between;
@@ -11,10 +10,17 @@
   margin: 0px;
 }
 
+@media screen and (max-width: 1200px) {
+  .navbar {
+    flex-direction: column;
+    justify-content: left;
+  }
+}
+
 .heading {
   font-size: 1.1rem;
   font-weight: 600;
-  margin-right: 30px;
+  margin: 5px;
   cursor: pointer;
 }
 

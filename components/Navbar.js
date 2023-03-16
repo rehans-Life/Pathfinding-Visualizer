@@ -5,37 +5,17 @@ import { IoIosMenu, IoMdArrowDropdown, IoMdClose } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { FiChevronDown } from "react-icons/fi";
+import Header from "./Header";
 
-let algorithms = [
-  {
-    title: "Dijkstras Algorithm",
-    name: "Dijkstras",
-  },
-  {
-    title: "A* Search",
-    name: "A*",
-  },
-  {
-    title: "Bidirectional Search",
-    name: "Bidirectional",
-  },
-  {
-    title: "Best First Search",
-    name: "Best First Search",
-  },
-  {
-    title: "British Museum Search",
-    name: "British Museum",
-  },
-  {
-    title: "BFS",
-    name: "BFS",
-  },
-  {
-    title: "DFS",
-    name: "DFS",
-  },
-];
+export const algorithms = {
+  Dijkstras: "Dijkstras Algorithm",
+  "A*": "A* Search",
+  Bidirectional: "Bidirectional Search",
+  "Best First Search": "Best First Search",
+  "British Museum": "British Museum Search",
+  BFS: "BFS",
+  DFS: "DFS",
+};
 
 let mazes = [
   {
@@ -147,7 +127,7 @@ export default function Navbar({
                 exit={{ opacity: 0, scale: 0, y: -25, animationDuration: 400 }}
                 className={styles.dropdown}
               >
-                {algorithms.map(({ name, title }, index) => (
+                {Object.entries(algorithms).map(([name, title], index) => (
                   <button
                     disabled={disable}
                     key={index}
@@ -352,7 +332,7 @@ export default function Navbar({
                   }}
                   className={styles.dropdownSidebar}
                 >
-                  {algorithms.map(({ title, name }, index) => (
+                  {Object.entries(algorithms).map(([name, title], index) => (
                     <button
                       disabled={disable}
                       key={index}

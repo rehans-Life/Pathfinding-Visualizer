@@ -2,7 +2,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Node from "../components/Node";
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+import Navbar, { algorithms } from "../components/Navbar";
 import { dijkstras } from "../algorithms/dijkstras";
 import { aStar } from "../algorithms/aStar";
 import { bidirectional } from "../algorithms/bidirectional";
@@ -869,7 +869,49 @@ export default function Home() {
         setSelectedTime={setSelectedTime}
         cols={cols}
       />
-      <Header />
+      {/* <Header /> */}
+      <p className={styles.description}>
+        {!selectedAlgorithm ? (
+          "Pick an Algorithm and visualize it!"
+        ) : selectedAlgorithm === "A*" || selectedAlgorithm === "Dijkstras" ? (
+          <>
+            {algorithms[selectedAlgorithm]} is{" "}
+            <i>
+              <b>weighted</b>
+            </i>{" "}
+            and{" "}
+            <i>
+              <b>guarantees</b>
+            </i>{" "}
+            the shortest path!
+          </>
+        ) : selectedAlgorithm === "BFS" &&
+          selectedAlgorithm === "Best First Search" ? (
+          <>
+            {algorithms[selectedAlgorithm]} is{" "}
+            <i>
+              <b>unweighted</b>
+            </i>{" "}
+            and{" "}
+            <i>
+              <b>guarantees</b>
+            </i>{" "}
+            the shortest path!
+          </>
+        ) : (
+          <>
+            {algorithms[selectedAlgorithm]} is{" "}
+            <i>
+              <b>unweighted</b>
+            </i>{" "}
+            and{" "}
+            <i>
+              <b>does not guarantees</b>
+            </i>{" "}
+            the shortest path!
+          </>
+        )}
+      </p>
       <div className={styles.grid}>
         {grid?.map((row, index) => (
           <div key={index} className={styles.row}>

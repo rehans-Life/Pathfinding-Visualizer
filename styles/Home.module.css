@@ -3,13 +3,14 @@
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  row-gap: 15px;
-  overflow: hidden;
+  width: 100%;
+  /* row-gap: 10px; */
+  /* overflow: hidden; */
 }
 
 .grid {
   display: flex;
-  width: 100vw;
+  width: 100%;
   flex-direction: column;
   justify-content: start;
   align-items: center;
@@ -22,4 +23,10 @@
 .button {
   display: flex;
   align-items: center;
+}
+
+.description {
+  color: rgb(12, 53, 71);
+  margin: 10px 0;
+  font-size: 0.85rem;
 }

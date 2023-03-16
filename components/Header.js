@@ -60,10 +60,12 @@ function Option({ title, Icon, Icon2 }) {
 
 export default function Header() {
   return (
-    <header className={styles.header}>
-      {items.map(({ title, icon, icon2 }, index) => (
-        <Option key={index} title={title} Icon={icon} Icon2={icon2} />
-      ))}
+    <header className={styles.container}>
+      <div className={styles.header}>
+        {items.map(({ title, icon, icon2 }, index) => (
+          <Option key={index} title={title} Icon={icon} Icon2={icon2} />
+        ))}
+      </div>
     </header>
   );
 }
