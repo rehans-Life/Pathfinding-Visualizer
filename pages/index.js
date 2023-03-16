@@ -457,9 +457,12 @@ export default function Home() {
       let navHeight = navRef.current.clientHeight;
       let headerHeight = headerRef.current.clientHeight;
       let descriptionHeight = descriptionRef.current.clientHeight;
+      console.log(navHeight);
+      console.log(headerHeight);
+      console.log(descriptionHeight);
 
       let remaningHeight =
-        window.outerHeight - navHeight - headerHeight - descriptionHeight - 100;
+        window.innerHeight - navHeight - headerHeight - descriptionHeight-30;
 
       if (width > 768) {
         setrows(Math.floor(remaningHeight / 20));
@@ -476,8 +479,6 @@ export default function Home() {
     window.onresize = screen;
     screen();
   }, []);
-
-  console.log(rows);
 
   useEffect(() => {
     if (cols) setGrid(getInitialGrid());
