@@ -135,50 +135,52 @@ const Tutorial = ({ heading, subHeading, description, image, algorithms }) => {
 
 export default function Modal({ setShowModal, setCounter, counter }) {
   return (
-    <motion.div
-      initial={{ scale: 0.1, translateX: 5, translateY: 85 }}
-      animate={{
-        scale: 1,
-        animationDuration: 400,
-        translateX: 5,
-        translateY: 85,
-      }}
-      exit={{ scale: 0, translateX: 5, translateY: 85 }}
-      className={styles.modal}
-    >
-      <div className={styles.counter}>{counter}/9</div>
-      <Tutorial
-        subHeading={tutorials[counter - 1].subHeading}
-        heading={tutorials[counter - 1].heading}
-        description={tutorials[counter - 1].description}
-        image={tutorials[counter - 1].image}
-        algorithms={tutorials[counter - 1].algorithms}
-      />
-      <div className={styles.btns}>
-        <button onClick={() => setShowModal(false)} className={styles.btn}>
-          Skip Tutorial
-        </button>
-        <div className={styles.move}>
-          <button
-            onClick={() => setCounter((prev) => (prev !== 1 ? prev - 1 : prev))}
-            className={styles.btn}
-          >
-            Previous
+    <div className={styles.background}>
+      <motion.div
+        initial={{ scale: 0.1 }}
+        animate={{
+          scale: 1,
+          animationDuration: 400,
+        }}
+        exit={{ scale: 0 }}
+        className={styles.modal}
+      >
+        <div className={styles.counter}>{counter}/9</div>
+        <Tutorial
+          subHeading={tutorials[counter - 1].subHeading}
+          heading={tutorials[counter - 1].heading}
+          description={tutorials[counter - 1].description}
+          image={tutorials[counter - 1].image}
+          algorithms={tutorials[counter - 1].algorithms}
+        />
+        <div className={styles.btns}>
+          <button onClick={() => setShowModal(false)} className={styles.btn}>
+            Skip Tutorial
           </button>
-          <button
-            onClick={() => {
-              if (counter !== 9) {
-                setCounter(counter + 1);
-              } else {
-                setShowModal(false);
+          <div className={styles.move}>
+            <button
+              onClick={() =>
+                setCounter((prev) => (prev !== 1 ? prev - 1 : prev))
               }
-            }}
-            className={styles.btn}
-          >
-            Next
-          </button>
+              className={styles.btn}
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => {
+                if (counter !== 9) {
+                  setCounter(counter + 1);
+                } else {
+                  setShowModal(false);
+                }
+              }}
+              className={styles.btn}
+            >
+              Next
+            </button>
+          </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
