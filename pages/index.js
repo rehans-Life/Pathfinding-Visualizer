@@ -452,7 +452,7 @@ export default function Home() {
       if (width > 768) {
         setCols(Math.floor(window.innerWidth / 20));
       } else {
-        setCols(Math.floor(window.innerWidth / 16));
+        setCols(Math.floor(window.innerWidth / 12));
       }
       setStartNode(null);
       setEndNode(null);
