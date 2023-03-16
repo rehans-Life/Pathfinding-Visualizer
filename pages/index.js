@@ -448,7 +448,7 @@ export default function Home() {
 
   useEffect(() => {
     let screen = () => {
-      let width = window.innerWidth;
+      let width = window.innerWidth - 1;
       if (width > 768) {
         setCols(Math.floor(window.innerWidth / 20));
       } else {

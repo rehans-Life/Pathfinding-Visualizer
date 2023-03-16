@@ -1,7 +1,5 @@
 .border {
   border: 1px solid rgb(175, 216, 248);
-  border-right: none;
-  border-bottom: none;
 }
 
 .node {
@@ -13,6 +11,10 @@
   .node {
     width: 10px;
     height: 10px;
+  }
+  .border {
+    border-right: none;
+    border-bottom: none;
   }
 }
 
