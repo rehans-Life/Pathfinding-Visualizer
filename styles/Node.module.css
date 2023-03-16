@@ -11,6 +11,7 @@
   .node {
     width: 10px;
     height: 10px;
+    box-sizing: none;
   }
   .border {
     border-right: none;
