@@ -74,3 +74,14 @@
   justify-content: left;
   /* margin: 5px; */
 }
+
+.cancel {
+  text-decoration: line-through !important;
+  color: rgb(185, 15, 15) !important;
+}
+
+.title {
+  font-size: 85%;
+  font-weight: 500;
+  color: rgb(12, 53, 71);
+}

@@ -38,7 +38,7 @@ const items = [
   },
 ];
 
-function Option({ title, Icon, Icon2 }) {
+function Option({ title, Icon, Icon2, selectedAlgorithm }) {
   return (
     <div className={styles.option}>
       {Icon instanceof String ? (
@@ -53,17 +53,38 @@ function Option({ title, Icon, Icon2 }) {
         <Icon />
       )}
       {Icon2 && <Icon2 />}
-      <p className={styles.title}>{title}</p>
+      <p
+        className={`${
+          title === "Weight Node" &&
+          [
+            "Bidirectional",
+            "Best First Search",
+            "British Museum",
+            "BFS",
+            "DFS",
+          ].includes(selectedAlgorithm)
+            ? styles.cancel
+            : ""
+        }  ${styles.title}`}
+      >
+        {title}
+      </p>
     </div>
   );
 }
 
-export default function Header({ headerRef }) {
+export default function Header({ headerRef, selectedAlgorithm }) {
   return (
     <header className={styles.container} ref={headerRef}>
       <div className={styles.header}>
         {items.map(({ title, icon, icon2 }, index) => (
-          <Option key={index} title={title} Icon={icon} Icon2={icon2} />
+          <Option
+            key={index}
+            title={title}
+            Icon={icon}
+            Icon2={icon2}
+            selectedAlgorithm={selectedAlgorithm}
+          />
         ))}
       </div>
     </header>

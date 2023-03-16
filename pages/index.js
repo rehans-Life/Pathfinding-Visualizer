@@ -452,6 +452,7 @@ export default function Home() {
   const descriptionRef = useRef(null);
   const [showModal, setShowModal] = useState(true);
   const [counter, setCounter] = useState(1);
+  const [keyedDown, setKeyedDown] = useState(false);
 
   useEffect(() => {
     let screen = () => {
@@ -650,6 +651,8 @@ export default function Home() {
       } else {
         changeBombNode(row, col);
       }
+    } else if (keyedDown) {
+      setWeightNode(row, col);
     } else {
       setMouseDown(true);
       setCellAsWall(row, col);
@@ -759,6 +762,8 @@ export default function Home() {
       } else {
         changeBombNode(row, col);
       }
+    } else if (keyedDown) {
+      setWeightNode(row, col);
     } else if (mouseDown) {
       setCellAsWall(row, col);
     }
@@ -823,6 +828,40 @@ export default function Home() {
       }
     }
     setBombNode(newGrid[row][col]);
+    setGrid(newGrid);
+  };
+
+  const setWeightNode = (row, col) => {
+    if (
+      [
+        "Bidirectional",
+        "Best First Search",
+        "British Museum",
+        "BFS",
+        "DFS",
+      ].includes(selectedAlgorithm)
+    ) {
+      return
+    }
+    let newGrid = grid.slice();
+    let node = grid[row][col];
+    let newNode = {
+      ...node,
+      isWeighted: true,
+      weight: 15,
+      isWall: false,
+      isVisited: false,
+      isBombVisited: false,
+      isBombInstantVisited: false,
+      isInstantInPath: false,
+      isInstantVisited: false,
+      distance: Infinity,
+      huristic: Infinity,
+      totalDistance: Infinity,
+      isInPath: false,
+      parent: null,
+    };
+    newGrid[row][col] = newNode;
     setGrid(newGrid);
   };
 
@@ -903,7 +942,7 @@ export default function Home() {
           setSelectedTime={setSelectedTime}
           cols={cols}
         />
-        <Header headerRef={headerRef} />
+        <Header headerRef={headerRef} selectedAlgorithm={selectedAlgorithm} />
         <p className={styles.description} ref={descriptionRef}>
           {!selectedAlgorithm ? (
             "Pick an Algorithm and visualize it!"
@@ -971,6 +1010,7 @@ export default function Home() {
                   isInstantInPath={node.isInstantInPath}
                   isAlgoDone={algoDone}
                   isWeighted={node.isWeighted}
+                  setKeyedDown={setKeyedDown}
                 ></Node>
               ))}
             </div>

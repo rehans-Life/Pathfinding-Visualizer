@@ -6,6 +6,7 @@ import { britishMuseum } from "./algorithms/britishMuseum";
 import { dfs } from "./algorithms/dfs";
 import { dijkstras } from "./algorithms/dijkstras";
 import { horizontalSkew } from "./mazes/horizontalSkew";
+import { kruskalsAlgorithm } from "./mazes/kruskalsAlgorithm";
 import { prims } from "./mazes/primsAlgorithm";
 import { recursiveDivision } from "./mazes/recursiveDivision";
 import { verticalSkew } from "./mazes/verticalSkew";
@@ -27,7 +28,8 @@ function animateAlgorithm(
   setGrid,
   setDisable,
   setAlgoDone,
-  selectedTime
+  selectedTime,
+  path2 = []
 ) {
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
@@ -38,10 +40,17 @@ function animateAlgorithm(
     setTimeout(() => {
       let newGrid = grid.slice();
       var node = visitedNodes[i];
-      var newNode = {
-        ...node,
-        isVisited: true,
-      };
+      if (check(path2, node)) {
+        var newNode = {
+          ...node,
+          isInPath: true,
+        };
+      } else {
+        var newNode = {
+          ...node,
+          isVisited: true,
+        };
+      }
       newGrid[node.row][node.col] = newNode;
       setGrid(newGrid);
     }, selectedTime * i);
@@ -71,9 +80,11 @@ const animatePath = (
       let newGrid = grid.slice();
 
       let node = path[i];
+
       let newNode = {
         ...node,
         isInPath: true,
+        isVisited: false,
       };
 
       newGrid[node.row][node.col] = newNode;
@@ -139,9 +150,10 @@ export function animateAlgorithmII(
   for (let i = 0; i < visitedNodes?.length; i++) {
     if (i === visitedNodes.length - 1) {
       setTimeout(() => {
-        animateAlgorithm(
+        animatePathII(
+          path,
           visitedNodes2,
-          path.concat(path2),
+          path2,
           grid,
           setGrid,
           setDisable,
@@ -228,6 +240,51 @@ export function visualizeII(
   );
 }
 
+function animatePathII(
+  path,
+  visitedNodes2,
+  path2,
+  grid,
+  setGrid,
+  setDisable,
+  setAlgoDone,
+  selectedTime
+) {
+  if (path.length < 2) {
+    setDisable(false);
+    setAlgoDone(true);
+    return;
+  }
+  for (let i = 0; i < path?.length; i++) {
+    if (i === path?.length - 1) {
+      setTimeout(() => {
+        animateAlgorithm(
+          visitedNodes2,
+          path2,
+          grid,
+          setGrid,
+          setDisable,
+          setAlgoDone,
+          selectedTime,
+          path
+        );
+      }, (selectedTime + 1) * i);
+    }
+    setTimeout(() => {
+      let newGrid = grid.slice();
+
+      let node = path[i];
+      let newNode = {
+        ...node,
+        isInPath: true,
+      };
+
+      newGrid[node.row][node.col] = newNode;
+      setGrid(newGrid);
+    }, selectedTime * i);
+  }
+}
+
 export function clearWay(grid, setGrid) {
   var newGrid = grid.slice();
   for (let i = 0; i < newGrid.length; i++) {
@@ -269,6 +326,16 @@ export const visualizeMazes = (
     );
   } else if (name === "Prims Algorithm") {
     prims(
+      grid,
+      setGrid,
+      clearBoard,
+      setDisable,
+      startNode,
+      endNode,
+      selectedTime
+    );
+  } else if (name === "Kruskals Algorithm") {
+    kruskalsAlgorithm(
       grid,
       setGrid,
       clearBoard,

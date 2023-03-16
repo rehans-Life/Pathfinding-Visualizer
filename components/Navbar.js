@@ -20,16 +20,19 @@ let mazes = [
   {
     name: "Recursive Division",
   },
+  { name: "Weighted Maze" },
+
   {
     name: "Prims Algorithm",
   },
+  { name: "Kruskals Algorithm" },
+
   {
     name: "Horizontal Skew",
   },
   {
     name: "Vertical Skew",
   },
-  { name: "Weighted Maze" },
 ];
 
 const times = [
@@ -164,7 +167,7 @@ export default function Navbar({
                 animate={{
                   opacity: 1,
                   scale: 1,
-                  y: 95,
+                  y: 108,
                   animationDuration: 400,
                 }}
                 exit={{ opacity: 0, scale: 0, y: -25, animationDuration: 400 }}

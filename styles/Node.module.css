@@ -5,6 +5,7 @@
 .node {
   width: 20px;
   height: 20px;
+  outline: none;
 }
 
 @media screen and (max-width: 768px) {
@@ -52,6 +53,7 @@
 
 .instantInPath {
   background-color: rgb(244, 255, 83);
+  border: none !important;
 }
 
 .bombVisited {
@@ -101,6 +103,7 @@
 .isSpecialPath {
   background-color: rgb(244, 255, 83);
   opacity: 0.5;
+  border: none !important;
   animation-name: none;
 }
 
