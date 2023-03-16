@@ -4,24 +4,19 @@
   justify-content: start;
   align-items: center;
   width: 100%;
-  /* row-gap: 10px; */
   overflow: hidden;
 }
 
 .grid {
-  display: inline-flex;
+  display: flex;
   width: 100%;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  border-top: 1px solid rgb(175, 216, 248);
-  border-right: 1px solid rgb(175, 216, 248);
 }
 
 .row {
-  display: inline-flex;
-  /* border-top: 1px solid rgb(175, 216, 248); */
-  border-bottom: 1px solid rgb(175, 216, 248);
+  display: flex;
 }
 
 .button {
