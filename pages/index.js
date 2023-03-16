@@ -475,8 +475,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!startNode && !endNode && grid) {
-      let start_col = cols < 45 ? Math.floor(2) : 10;
-      let end_col = cols < 45 ? Math.floor(cols - 3) : cols - 10;
+      let start_col = 10;
+      let end_col = cols - 10;
       changeStartNode(START_ROW, start_col);
       changeEndNode(END_ROW, end_col);
     }
