@@ -20,7 +20,7 @@
 .heading {
   font-size: 1.1rem;
   font-weight: 600;
-  margin: 5px;
+  margin-right: 20px;
   cursor: pointer;
 }
 
@@ -104,6 +104,7 @@
   border: none;
   background-color: transparent;
   transition-duration: 200ms;
+  color: rgb(255, 255, 255);
   text-align: left;
   transition-property: all;
   border-radius: 3px;
