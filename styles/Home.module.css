@@ -9,23 +9,17 @@
 }
 
 .grid {
-  display: flex;
+  display: inline-flex;
   width: 100%;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-}
-
-.grid {
-  border-bottom: 1px solid rgb(175, 216, 248);
+  border-top: 1px solid rgb(175, 216, 248);
   border-right: 1px solid rgb(175, 216, 248);
-  box-sizing: none;
 }
 
 .row {
-  display: inline-flex;
-  border-top: 1px solid rgb(175, 216, 248);
-  width: 100%;
+  display: flex;
 }
 
 .button {
