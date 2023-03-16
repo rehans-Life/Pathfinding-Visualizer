@@ -136,14 +136,14 @@ const Tutorial = ({ heading, subHeading, description, image, algorithms }) => {
 export default function Modal({ setShowModal, setCounter, counter }) {
   return (
     <motion.div
-      initial={{ scale: 0.1, translateX: 5, translateY: 100 }}
+      initial={{ scale: 0.1, translateX: 5, translateY: 85 }}
       animate={{
         scale: 1,
         animationDuration: 400,
         translateX: 5,
-        translateY: 100,
+        translateY: 85,
       }}
-      exit={{ scale: 0, translateX: 5, translateY: 100 }}
+      exit={{ scale: 0, translateX: 5, translateY: 85 }}
       className={styles.modal}
     >
       <div className={styles.counter}>{counter}/9</div>
