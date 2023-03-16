@@ -448,7 +448,12 @@ export default function Home() {
 
   useEffect(() => {
     let screen = () => {
-      setCols(Math.floor(window.innerWidth / 20));
+      let width = window.innerWidth;
+      if (width > 768) {
+        setCols(Math.floor(window.innerWidth / 20));
+      } else {
+        setCols(Math.floor(window.innerWidth / 16));
+      }
       setStartNode(null);
       setEndNode(null);
       setBombNode(null);
@@ -869,7 +874,7 @@ export default function Home() {
         setSelectedTime={setSelectedTime}
         cols={cols}
       />
-      {/* <Header /> */}
+      <Header />
       <p className={styles.description}>
         {!selectedAlgorithm ? (
           "Pick an Algorithm and visualize it!"
