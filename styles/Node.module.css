@@ -1,6 +1,5 @@
 .border {
-  /* border-top: 1px solid rgb(175, 216, 248); */
-  border-right: 1px solid rgb(175, 216, 248);
+  border: 1px solid rgb(175, 216, 248);
 }
 
 .node {
@@ -45,14 +44,10 @@
 
 .instantVisited {
   background-color: rgba(0, 190, 218, 0.75);
-  border-top: 1px solid rgba(0, 190, 218, 0.75);
-  border-left: 1px solid rgba(0, 190, 218, 0.75);
 }
 
 .bombInstantVisited {
   background-color: rgba(178, 67, 255, 0.75);
-  border-left: 1px solid rgba(178, 67, 255, 0.75);
-  border-bottom: 1px solid rgba(178, 67, 255, 0.75);
 }
 
 .instantInPath {
@@ -132,8 +127,6 @@
   100% {
     transform: scale(1);
     background-color: rgba(0, 190, 218, 0.75);
-    border-left: 1px solid rgba(0, 190, 218, 0.75);
-    border-bottom: 1px solid rgba(0, 190, 218, 0.75);
   }
 }
 
@@ -160,8 +153,6 @@
   100% {
     transform: scale(1);
     background-color: rgba(178, 67, 255, 0.75);
-    border-left: 1px solid rgba(178, 67, 255, 0.75);
-    border-bottom: 1px solid rgba(178, 67, 255, 0.75);
   }
 }
 
