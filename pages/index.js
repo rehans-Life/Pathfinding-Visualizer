@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Node from "../components/Node";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar, { algorithms } from "../components/Navbar";
 import { dijkstras } from "../algorithms/dijkstras";
 import { aStar } from "../algorithms/aStar";
@@ -12,12 +12,13 @@ import { bestfs } from "../algorithms/bestFirstSearch";
 import { britishMuseum } from "../algorithms/britishMuseum";
 import { clearWay } from "../visualize";
 import Header from "../components/Header";
+import { MiddlewareNotFoundError } from "next/dist/shared/lib/utils";
 
 export const START_ROW = 10;
 export const START_COL = 5;
 export const END_ROW = 10;
 export const END_COL = 40;
-export const ROWS = 21;
+export const rows = 21;
 export const COLS = 50;
 
 function instantAlgorithm(
@@ -431,8 +432,8 @@ function instantAlgorithmV(
 }
 
 export default function Home() {
-  const [rows, setRows] = useState(ROWS);
   const [cols, setCols] = useState(0);
+  const [rows, setrows] = useState(0);
   const [grid, setGrid] = useState();
   const [disable, setDisable] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
@@ -445,13 +446,26 @@ export default function Home() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(null);
   const [algoDone, setAlgoDone] = useState(false);
   const [selectedTime, setSelectedTime] = useState(20);
+  const navRef = useRef(null);
+  const headerRef = useRef(null);
+  const descriptionRef = useRef(null);
 
   useEffect(() => {
     let screen = () => {
       let width = window.innerWidth - 1;
+
+      let navHeight = navRef.current.clientHeight;
+      let headerHeight = headerRef.current.clientHeight;
+      let descriptionHeight = descriptionRef.current.clientHeight;
+
+      let remaningHeight =
+        window.outerHeight - navHeight - headerHeight - descriptionHeight - 100;
+
       if (width > 768) {
+        setrows(Math.floor(remaningHeight / 20));
         setCols(Math.floor(window.innerWidth / 20));
       } else {
+        setrows(Math.floor(remaningHeight / 10));
         setCols(Math.floor(window.innerWidth / 10));
       }
       setStartNode(null);
@@ -462,6 +476,8 @@ export default function Home() {
     window.onresize = screen;
     screen();
   }, []);
+
+  console.log(rows);
 
   useEffect(() => {
     if (cols) setGrid(getInitialGrid());
@@ -477,15 +493,16 @@ export default function Home() {
     if (!startNode && !endNode && grid) {
       let start_col = cols < 45 ? 6 : 10;
       let end_col = cols < 45 ? cols - 6 : cols - 10;
-      changeStartNode(START_ROW, start_col);
-      changeEndNode(END_ROW, end_col);
+      let midde_row = Math.floor(rows / 2);
+      changeStartNode(midde_row, start_col);
+      changeEndNode(midde_row, end_col);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [grid]);
 
   function getInitialGrid() {
     let grid = [];
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < rows; i++) {
       let row = [];
       for (let j = 0; j < cols; j++) {
         let node = {
@@ -526,7 +543,7 @@ export default function Home() {
     let row = 10;
     let col = Math.floor(cols / 2);
     let newGrid = grid.slice();
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
@@ -640,7 +657,7 @@ export default function Home() {
 
   const clearPath = (algoClear = true) => {
     let newGrid = grid.slice();
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
@@ -761,7 +778,7 @@ export default function Home() {
 
   const changeStartNode = (row, col) => {
     let newGrid = grid.slice();
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
@@ -777,7 +794,7 @@ export default function Home() {
 
   const changeEndNode = (row, col) => {
     let newGrid = grid.slice();
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
@@ -794,7 +811,7 @@ export default function Home() {
 
   const changeBombNode = (row, col) => {
     let newGrid = grid.slice();
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
@@ -810,7 +827,7 @@ export default function Home() {
 
   const clearBoard = () => {
     let newGrid = grid.slice();
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let node = grid[i][j];
         let newNode = {
@@ -856,6 +873,7 @@ export default function Home() {
       <Navbar
         setDisable={setDisable}
         selectedAlgorithm={selectedAlgorithm}
+        navRef={navRef}
         setSelectedAlgorithm={setSelectedAlgorithm}
         grid={grid}
         setGrid={setGrid}
@@ -874,8 +892,8 @@ export default function Home() {
         setSelectedTime={setSelectedTime}
         cols={cols}
       />
-      <Header />
-      <p className={styles.description}>
+      <Header headerRef={headerRef} />
+      <p className={styles.description} ref={descriptionRef}>
         {!selectedAlgorithm ? (
           "Pick an Algorithm and visualize it!"
         ) : selectedAlgorithm === "A*" || selectedAlgorithm === "Dijkstras" ? (

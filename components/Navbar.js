@@ -5,7 +5,6 @@ import { IoIosMenu, IoMdArrowDropdown, IoMdClose } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { FiChevronDown } from "react-icons/fi";
-import Header from "./Header";
 
 export const algorithms = {
   Dijkstras: "Dijkstras Algorithm",
@@ -68,6 +67,7 @@ export default function Navbar({
   selectedTime,
   setSelectedTime,
   cols,
+  navRef,
 }) {
   const [showAlgorithms, setShowAlgorithms] = useState(false);
   const [notSelected, setNotSelected] = useState(false);
@@ -97,7 +97,7 @@ export default function Navbar({
   };
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={styles.navbar} ref={navRef}>
       <Link href={"/"}>
         <h3 className={styles.heading}>Pathfinding Visualizer</h3>
       </Link>

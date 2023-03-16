@@ -58,9 +58,9 @@ function Option({ title, Icon, Icon2 }) {
   );
 }
 
-export default function Header() {
+export default function Header({ headerRef }) {
   return (
-    <header className={styles.container}>
+    <header className={styles.container} ref={headerRef}>
       <div className={styles.header}>
         {items.map(({ title, icon, icon2 }, index) => (
           <Option key={index} title={title} Icon={icon} Icon2={icon2} />
