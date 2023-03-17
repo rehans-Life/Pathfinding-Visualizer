@@ -35,6 +35,11 @@ const tutorials = [
           "arguably the best pathfinding algorithm; uses heuristics to guarantee the shortest path much faster than Dijkstra's Algorithm",
         type: "weighted",
       },
+      "Bidirectional Search": {
+        description:
+          "This algorithm boils down to basically performing a BFS traversel from both the sides",
+        type: "unweighted",
+      },
       "Best First Search": {
         description:
           "it can be called as a greedy BFS; similar to A* uses heuristics to guarantee the shortest path",
