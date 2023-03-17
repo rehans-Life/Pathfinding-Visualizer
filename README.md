@@ -1,34 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Pathfinding Visualizer
 
-## Getting Started
+Welcome to Pathfinding Visualizer! I built this application because I was fascinated by pathfinding algorithms, and I wanted to visualize them in action. I hope that you enjoy playing around with this visualization tool just as much as I enjoyed building it. You can access it here [pathfinding-visualizer-livid.vercel.app](https://pathfinding-visualizer-livid.vercel.app/)
 
-First, run the development server:
+## Meet the Algorithms
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+This application supports the following algorithms:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Dijkstra's Algorithm (weighted): the father of pathfinding algorithms; guarantees the shortest path
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+A Search* (weighted): arguably the best pathfinding algorithm; uses heuristics to guarantee the shortest path much faster than Dijkstra's Algorithm
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Best First Search (unweighted): it can be called as a greedy BFS; similar to A* uses heuristics to guarantee the shortest path
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+British Musuem Search (unweighted): it can be called as a greedy DFS; which also uses heuristics but still does not garuntee the shortest path.
 
-## Learn More
+Bidirectional Search (unweighted): This algorithm boils down to basically performing a BFS traversel from both the sides
 
-To learn more about Next.js, take a look at the following resources:
+Breath-first Search (unweighted): a great algorithm; guarantees the shortest path
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Depth-first Search (unweighted): a very bad algorithm for pathfinding; does not guarantee the shortest path
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+On top of the pathfinding algorithms listed above, I implemented a Recursive Division, Prims Algorithm and Kruskals Algorithm for Maze Generation.
